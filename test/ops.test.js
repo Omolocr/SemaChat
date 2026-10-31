@@ -133,9 +133,25 @@ test('server: health checks, signed sessions, rate limit, security headers', asy
     const codes = []; for (let i = 0; i < 25; i++) codes.push((await getj(port, '/api/auth/signin', J({ email: 'amani@mail.com', code: 'bad' }))).s); assert.ok(codes.includes(429), 'auth endpoints are rate limited');
   } finally { p.kill('SIGTERM'); await sleep(300); }
 });
-test('server: production mode refuses to start in demo configuration', async () => {
-  const { code, out } = await boot({ PORT: 4900 + Math.floor(Math.random() * 90), NODE_ENV: 'production', SEMACHAT_DB: path.join(tmp(), 'p.json'), SEMACHAT_SECRET: '', SEMACHAT_ALLOW_DEMO: '' }, 4000);
-  assert.equal(code, 1); assert.match(out, /REFUSING TO START/); assert.match(out, /SEMACHAT_SECRET/);
+test('server: production without its secret stays UP in setup mode (health passes, nothing else is served)', async () => {
+  const port = 4900 + Math.floor(Math.random() * 90);
+  const { p, out } = await boot({ PORT: port, NODE_ENV: 'production', SEMACHAT_DB: path.join(tmp(), 'p.json'), SEMACHAT_SECRET: '', SEMACHAT_ALLOW_DEMO: '' }, 1800); try {
+    assert.match(out, /SETUP REQUIRED/); assert.match(out, /SEMACHAT_SECRET/);
+    const h = await getj(port, '/healthz'); assert.equal(h.s, 200); const r = await getj(port, '/readyz'); assert.equal(r.s, 200); assert.equal(r.j.setupRequired, true);
+    assert.equal((await getj(port, '/api/auth/signin', { method: 'POST', body: '{}' })).s, 503, 'the API is closed');
+    const pg = await fetch('http://127.0.0.1:' + port + '/'); assert.equal(pg.status, 200); assert.match(await pg.text(), /setup required/i);
+  } finally { p.kill('SIGTERM'); await sleep(300); }
+});
+test('server: production with a secret starts, but never accepts the demo code or the demo developer address; unwritable storage does not crash it', async () => {
+  const port = 5950 + Math.floor(Math.random() * 40), J = b => ({ method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(b) });
+  const blocker = path.join(tmp(), 'not-a-folder'); fs.writeFileSync(blocker, 'x');   // a FILE where a folder is needed: the same failure as a read-only or root-owned /data
+  const { p, out } = await boot({ PORT: port, NODE_ENV: 'production', SEMACHAT_DB: path.join(blocker, 'sub', 'semachat.json'), SEMACHAT_SECRET: 'k'.repeat(40), SEMACHAT_ALLOW_DEMO: '' }, 2200); try {
+    assert.match(out, /RUNNING, BUT NOT READY FOR CLIENTS/); assert.match(out, /TEMPORARY file/);
+    assert.equal((await getj(port, '/healthz')).s, 200); const rz = await getj(port, '/readyz'); assert.equal(rz.s, 200); assert.match(rz.j.storage, /temporary/);
+    assert.equal((await getj(port, '/api/auth/signin', J({ email: 'amani@mail.com', code: '123ABC' }))).s, 400, 'demo code refused in production');
+    assert.equal((await getj(port, '/api/admin/signin', J({ email: 'admin@semachat.app', code: '123ABC' }))).s, 401, 'demo developer address refused in production');
+    const o = await getj(port, '/api/auth/otp', J({ email: 'amani@mail.com', purpose: 'signin' })); assert.match(o.j.hint, /not set up/i);
+  } finally { p.kill('SIGTERM'); await sleep(300); }
 });
 
 test('email-only auth in demo mode: sign-up verifies the email, sign-in by email, tokens never expire until sign-off', () => {
