@@ -1,0 +1,1028 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{TITLE}}</title>
+<script>window.SC_APP="{{APP}}";window.SC_PREVIEW={{PREVIEW}}</script>
+<!--ICONS-->
+<style>
+:root{--ink:#1f1b2e;--sand:#fbf6ee;--card:#fff;--brand:#c2410c;--brand2:#f59e0b;--green:#2f855a;--blue:#2b6cb0;--muted:#7a7488;--line:#eadfd0;--soft:#f4ebdd;--red:#c53030}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#2a2236;color:var(--ink);min-height:100vh;font-size:15px}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+input,select,textarea{font:inherit;color:inherit;width:100%;border:1.5px solid var(--line);border-radius:12px;padding:11px 13px;background:#fff;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--brand)}
+textarea{resize:none}
+h1,h2,h3{line-height:1.2}
+.top{display:flex;align-items:center;gap:14px;padding:10px 18px;background:#1b1626;color:#fff;position:sticky;top:0;z-index:50;flex-wrap:wrap}
+.top b{font-size:18px;letter-spacing:.3px}.top small{color:#b9afcf;font-size:12px}
+.seg{display:flex;background:#2f2740;border-radius:12px;padding:3px;gap:2px}
+.seg button{padding:7px 14px;border-radius:9px;color:#cfc6e4;font-size:13.5px;font-weight:600}
+.seg button.on{background:var(--brand);color:#fff}
+.sp{flex:1}
+.link{color:#f0b27a;font-size:12.5px;text-decoration:underline}
+#stage{display:flex;justify-content:center;padding:22px 12px}
+.phone{width:410px;height:min(840px,calc(100vh - 100px));min-height:560px;background:var(--sand);border-radius:38px;box-shadow:0 0 0 10px #0e0b14,0 30px 70px #000a;overflow:hidden;position:relative}
+#app{height:100%;display:flex;flex-direction:column;position:relative}
+.scr{flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:12px}
+.scr.fx{display:flex;flex-direction:column;overflow:hidden;padding:0}
+@media(max-width:520px){#stage{padding:0}.phone{width:100vw;height:calc(100vh - 56px);border-radius:0;box-shadow:none}}
+/* generic */
+.pad{padding:14px 16px}
+.card{background:var(--card);border-radius:18px;padding:14px;box-shadow:0 1px 0 var(--line)}
+.row{display:flex;align-items:center;gap:12px}.col{display:flex;flex-direction:column;gap:10px}
+.grow{flex:1;min-width:0}.mut{color:var(--muted);font-size:13px}.sm{font-size:12.5px}.b{font-weight:700}
+.ell{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btn{background:var(--brand);color:#fff;border-radius:12px;padding:11px 16px;font-weight:700;text-align:center}
+.btn.alt{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}.btn.gr{background:var(--green)}.btn.red{background:var(--red)}
+.btn.sm{padding:7px 12px;font-size:13px;border-radius:10px}.btn[disabled]{opacity:.5}
+.btn.full{width:100%}
+.chip{display:inline-block;padding:6px 12px;border-radius:99px;background:var(--soft);font-size:13px;font-weight:600;color:#5c4a33;white-space:nowrap}
+.chip.on{background:var(--ink);color:#fff}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 16px 10px;scrollbar-width:none}
+.badge{background:var(--brand);color:#fff;border-radius:99px;font-size:11px;font-weight:700;padding:2px 7px;min-width:20px;text-align:center}
+.tagb{font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;background:#e6f4ea;color:var(--green)}.tagb.o{background:#fdebd9;color:var(--brand)}.tagb.b{background:#e3eefb;color:var(--blue)}
+.av{border-radius:50%;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative}
+.vf.t-yellow{background:#eab308!important;color:#3b2f00!important}.vf.t-green{background:#16a34a!important}.vf.t-gold{background:linear-gradient(135deg,#f6d365,#c58a00)!important;color:#4a3200!important}
+.vf{position:absolute;right:-3px;bottom:-3px;background:var(--blue);color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;font-style:normal;display:flex;align-items:center;justify-content:center;border:2px solid #fff}
+.ph{display:flex;align-items:center;gap:10px;padding:14px 12px 10px;background:var(--sand);position:sticky;top:0;z-index:5}
+.ph h2{font-size:19px;flex:1}.ib{width:38px;height:38px;border-radius:50%;background:#fff;box-shadow:0 1px 0 var(--line);font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lh{font-size:22px;font-weight:800;padding:18px 16px 8px;display:flex;align-items:center;gap:8px}
+.sec{font-weight:800;font-size:13px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);padding:14px 16px 6px}
+.li{display:flex;align-items:center;gap:12px;padding:10px 16px}.li:active{background:var(--soft)}
+.sub3{display:flex;gap:6px;margin:0 16px 10px;background:var(--soft);padding:4px;border-radius:13px}
+.sub3 button{flex:1;padding:8px 6px;border-radius:10px;font-weight:700;font-size:13.5px;color:#7b6747;position:relative}.sub3 button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px #0002}
+.empty{text-align:center;color:var(--muted);padding:34px 20px}.empty b{display:block;font-size:34px;margin-bottom:6px}
+.err{color:var(--red);font-size:13.5px;font-weight:600}
+/* nav */
+.nav{display:flex;background:#fff;border-top:1px solid var(--line);padding:6px 4px 10px}
+.nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:700;color:var(--muted);padding:5px 0;position:relative}
+.nav button span{font-size:21px;filter:grayscale(1);opacity:.7}.nav button.on{color:var(--brand)}.nav button.on span{filter:none;opacity:1}
+.nav .badge{position:absolute;top:0;left:56%}
+/* auth */
+.auth{padding:26px 24px;text-align:center;background:linear-gradient(180deg,#fff3e0,var(--sand) 40%)}
+.auth .logo{font-size:56px;margin-top:10px}.auth h1{font-size:34px;color:var(--brand);letter-spacing:.5px}.auth .tag{color:var(--muted);margin:2px 0 18px;font-style:italic}
+.auth form,.auth .fm{text-align:left;display:flex;flex-direction:column;gap:11px;margin-top:14px}
+label.lb{font-size:12.5px;font-weight:700;color:#5c4a33;margin-bottom:-6px}
+.hint{background:#fff8e1;border:1px dashed var(--brand2);border-radius:12px;padding:9px 12px;font-size:12.5px;color:#7a5200}
+/* home */
+.hero{padding:20px 18px 6px}.hero h1{font-size:26px}.hero p{color:var(--muted);margin-top:3px}
+.ann{margin:10px 16px 0;background:linear-gradient(90deg,#1f1b2e,#44337a);color:#fff;border-radius:16px;padding:12px 14px;font-size:13.5px}.ann b{color:var(--brand2)}
+.wg{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:14px 16px}
+.wt{border-radius:22px;padding:15px;color:#fff;min-height:122px;text-align:left;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.wt .e{font-size:30px}.wt h3{font-size:17px}.wt p{font-size:12.5px;opacity:.92}.wt .badge{position:absolute;top:12px;right:12px;background:#fff;color:var(--ink)}
+.wt.off{filter:grayscale(1);opacity:.55}
+.wt.wide{grid-column:span 2;min-height:0}
+/* chat */
+.msgs{flex:1;overflow-y:auto;padding:12px 12px 6px;display:flex;flex-direction:column;gap:6px;background:linear-gradient(180deg,#fbf6ee,#f6ecda)}
+
+.bb{max-width:80%;padding:8px 11px 5px;border-radius:16px;font-size:14.5px;line-height:1.35;word-wrap:break-word}
+.bb.me{align-self:flex-end;background:var(--brand);color:#fff;border-bottom-right-radius:5px}
+.bb.them{align-self:flex-start;background:#fff;border-bottom-left-radius:5px;box-shadow:0 1px 0 var(--line)}
+.bt{font-size:10.5px;opacity:.7;text-align:right;margin-top:2px}.sn{font-size:12px;font-weight:800;margin-bottom:2px}
+.vw{display:flex;align-items:center;gap:8px;min-width:190px}.vw .pl{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center}
+.them .vw .pl{background:var(--soft)}.wave{display:flex;align-items:center;gap:2px;height:26px;flex:1}.wave i{width:3px;border-radius:2px;background:currentColor;opacity:.7}
+.pic{width:210px;height:150px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:58px;background-size:cover;background-position:center;position:relative;margin:2px 0 4px}
+.pic .dur{position:absolute;right:8px;bottom:8px;background:#0008;color:#fff;font-size:11px;padding:2px 7px;border-radius:99px}
+.pic .pp{position:absolute;width:44px;height:44px;border-radius:50%;background:#0007;color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center}
+.fcard,.ccard,.mcard{display:flex;align-items:center;gap:10px;min-width:200px}.fi{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:20px}
+.them .fi{background:var(--soft)}
+.map{width:210px;height:110px;border-radius:12px;position:relative;background:#dfe9d6;background-image:linear-gradient(#cfdcc4 1px,transparent 1px),linear-gradient(90deg,#cfdcc4 1px,transparent 1px);background-size:22px 22px;display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:4px;color:var(--ink)}
+.callrow{display:flex;align-items:center;gap:8px;font-weight:600}
+.comp{display:flex;align-items:center;gap:8px;padding:8px 10px 12px;background:#fff;border-top:1px solid var(--line)}
+.comp input{border-radius:99px;padding:10px 14px}.comp .ib{background:var(--soft);box-shadow:none}.comp .send{background:var(--brand);color:#fff}
+.recb{display:flex;align-items:center;gap:10px;padding:10px 12px 14px;background:#fff;border-top:1px solid var(--line)}.rd{width:12px;height:12px;border-radius:50%;background:var(--red);animation:bl 1s infinite}
+@keyframes bl{50%{opacity:.2}}
+/* sheet */
+.shade{position:absolute;inset:0;background:#0007;z-index:20}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--sand);border-radius:24px 24px 0 0;padding:16px;z-index:21;max-height:82%;overflow-y:auto;animation:up .2s}
+@keyframes up{from{transform:translateY(40px);opacity:0}}
+.sheet h3{margin-bottom:12px;font-size:18px}.grip{width:44px;height:5px;border-radius:9px;background:var(--line);margin:-6px auto 12px}
+.ag{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.ag button{background:#fff;border-radius:16px;padding:14px 4px;font-weight:700;font-size:13px;display:flex;flex-direction:column;align-items:center;gap:6px;box-shadow:0 1px 0 var(--line)}.ag span{font-size:28px}
+/* feed */
+.post{margin:0 16px 14px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 1px 0 var(--line)}
+.post .hd{display:flex;align-items:center;gap:10px;padding:12px}
+.media{height:230px;display:flex;align-items:center;justify-content:center;font-size:84px;position:relative;color:#fff}
+.media .dur{position:absolute;right:10px;bottom:10px;background:#0008;font-size:12px;padding:3px 9px;border-radius:99px}.media .pp{position:absolute;font-size:26px;background:#0006;border-radius:50%;width:56px;height:56px;display:flex;align-items:center;justify-content:center}
+.pa{display:flex;gap:16px;padding:10px 14px;font-weight:700;font-size:14px;color:#5c4a33}.pa button{display:flex;gap:5px;align-items:center}.pa .on{color:var(--red)}
+.cap{padding:0 14px 12px;font-size:14.5px}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px}.kpi{background:#fff;border-radius:16px;padding:12px}.kpi b{font-size:22px;display:block}.kpi span{font-size:12px;color:var(--muted)}
+.chart{width:100%;height:auto}
+.tube{margin:0 16px 14px;border-radius:20px;padding:16px;color:#fff;background:linear-gradient(135deg,#44337a,#c2410c)}
+/* wallet */
+.wal{margin:6px 16px 0;border-radius:22px;padding:18px;background:linear-gradient(135deg,#1f1b2e,#2f855a);color:#fff}.wal .bal{font-size:32px;font-weight:800;margin:4px 0 12px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:10px 16px}.tile{background:#fff;border-radius:16px;padding:13px 4px;font-weight:700;font-size:12.5px;display:flex;flex-direction:column;align-items:center;gap:5px;box-shadow:0 1px 0 var(--line);text-align:center}.tile span{font-size:26px}
+.tile.off{opacity:.4;filter:grayscale(1)}
+.exc{display:flex;gap:12px;align-items:center;margin:0 16px 10px;background:#fff;border-radius:18px;padding:12px}.exc .em{width:52px;height:52px;border-radius:14px;background:var(--soft);font-size:26px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pb{height:9px;border-radius:9px;background:var(--soft);overflow:hidden}.pb i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--brand2))}
+.chk{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;background:#fff}.chk.on{background:var(--green);border-color:var(--green);color:#fff}
+.done{text-decoration:line-through;opacity:.55}
+.plan{border:2px solid var(--line);border-radius:18px;padding:14px;background:#fff}.plan.cur{border-color:var(--green)}.plan ul{margin:8px 0 10px 18px;font-size:13.5px;color:#5c4a33}
+.sw{position:relative;display:inline-block;width:44px;height:25px;flex-shrink:0}.sw input{opacity:0;width:0;height:0;position:absolute}.sw span{position:absolute;inset:0;background:#cbbfae;border-radius:99px;transition:.2s}.sw span:before{content:"";position:absolute;width:19px;height:19px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}.sw input:checked+span{background:var(--green)}.sw input:checked+span:before{transform:translateX(19px)}
+/* call */
+.call{position:absolute;inset:0;z-index:40;background:linear-gradient(160deg,#1f1b2e,#3b2a5a 60%,#7b2d12);color:#fff;display:flex;flex-direction:column;padding:26px 16px 24px}
+.call h2{text-align:center;font-size:20px}.call .ct{text-align:center;color:#d9cdf1;margin:4px 0 14px}
+.cg{flex:1;display:grid;gap:10px;grid-template-columns:repeat(2,1fr);align-content:center;overflow:auto}
+.pt{background:#ffffff14;border-radius:20px;padding:16px 6px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;min-height:120px;justify-content:center}.pt.live{box-shadow:0 0 0 2px #48bb78 inset}.pt small{font-size:12px;opacity:.8}
+.pt.vid{background:linear-gradient(145deg,#ffffff22,#ffffff08)}
+.cc{display:flex;justify-content:center;gap:14px;padding-top:12px}.cc button{width:54px;height:54px;border-radius:50%;background:#ffffff22;font-size:22px;color:#fff}.cc .on{background:#fff;color:var(--ink)}.cc .end{background:var(--red)}
+#toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#1f1b2e;color:#fff;padding:10px 16px;border-radius:12px;font-size:13.5px;z-index:99;max-width:86vw;display:none;box-shadow:0 8px 26px #0006;text-align:center}
+.blk{padding:60px 28px;text-align:center}.blk b{font-size:50px;display:block}
+/* admin */
+#admin{width:100%;max-width:1180px;background:#f6f2ea;border-radius:20px;min-height:calc(100vh - 110px);display:grid;grid-template-columns:220px 1fr;overflow:hidden}
+#admin[hidden]{display:none}
+.side{background:#1b1626;color:#cfc6e4;padding:18px 12px}.side h3{color:#fff;padding:2px 10px 14px;font-size:18px}
+.side button{display:flex;gap:10px;width:100%;padding:10px 12px;border-radius:10px;font-weight:600;font-size:14px;text-align:left;margin-bottom:2px;align-items:center}.side button.on{background:var(--brand);color:#fff}.side .badge{margin-left:auto}
+.main{padding:22px 24px;overflow:auto}.main h2{font-size:22px;margin-bottom:4px}.main .lead{color:var(--muted);margin-bottom:16px}
+.gridk{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:16px}.gk{background:#fff;border-radius:16px;padding:14px}.gk b{display:block;font-size:24px;margin:3px 0}.gk span{font-size:12.5px;color:var(--muted)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.pn{background:#fff;border-radius:16px;padding:16px;margin-bottom:14px}.pn h3{font-size:15px;margin-bottom:10px}
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px}.tbl th{text-align:left;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.5px;padding:8px 8px}.tbl td{padding:9px 8px;border-top:1px solid var(--soft);vertical-align:middle}
+.fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}.fg .fl{display:flex;align-items:center;gap:12px;background:#faf6ee;border-radius:12px;padding:11px 13px}
+.ns{width:84px;padding:7px 9px;border-radius:9px}
+@media(max-width:860px){#admin{grid-template-columns:1fr}.side{display:flex;overflow-x:auto;gap:4px}.side h3{display:none}.side button{width:auto;white-space:nowrap}.two{grid-template-columns:1fr}}
+/* ---- dual-mode (Normal / Business) ---- */
+.phone.biz{--brand:#16a34a;--brand2:#84cc16;--soft:#e6f2e0;--line:#d5e5cd;--sand:#f3f9ef}
+.phone.biz .msgs{background:linear-gradient(180deg,#f3f9ef,#e4f1dc)}
+.phone.biz .auth{background:linear-gradient(180deg,#e6f6dc,var(--sand) 40%)}
+.mw{margin:10px 16px 0;background:#fff;border-radius:20px;padding:8px;box-shadow:0 1px 0 var(--line)}
+.mseg{display:flex;background:var(--soft);border-radius:14px;padding:4px;gap:4px}
+.mseg button{flex:1;padding:10px 6px;border-radius:11px;font-weight:800;font-size:14px;color:#6b6250;display:flex;align-items:center;justify-content:center;gap:6px}
+.mseg button.on{background:#2b6cb0;color:#fff}.mseg button.on.biz{background:#16a34a}
+.mseg button.dim{opacity:.8}
+.mseg small{font-weight:800;font-size:11px;padding:1px 7px;border-radius:99px;background:var(--ink);color:#fff}
+.mseg button.on small{background:#fff3}
+.mcta{display:flex;align-items:center;gap:10px;padding:10px 6px 4px;font-size:13px}
+.pill{display:inline-flex;gap:5px;align-items:center;padding:6px 11px;border-radius:99px;font-size:12px;font-weight:800;background:#e3eefb;color:#2b6cb0}.pill.biz{background:#dcfce7;color:#15803d}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block}.dot.n{background:#2b6cb0}.dot.b{background:#16a34a}
+.nrow{display:flex;gap:12px;padding:11px 16px;align-items:flex-start}.nrow.unread{background:#fff7e8}.phone.biz .nrow.unread{background:#eefae8}
+.nrow .ni{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.ban{position:absolute;left:10px;right:10px;top:12px;z-index:60;background:#1f1b2e;color:#fff;border-radius:16px;padding:11px 13px;display:flex;gap:10px;align-items:center;box-shadow:0 10px 30px #0007;animation:dn .25s;cursor:pointer}
+.ban.urgent{background:#b91c1c}
+@keyframes dn{from{transform:translateY(-30px);opacity:0}}
+.row.wrap{flex-wrap:wrap}
+.opt{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--soft)}
+.opt:last-child{border-bottom:0}
+.ordc{margin:0 16px 12px;background:#fff;border-radius:18px;padding:13px}
+.bar3{height:10px;border-radius:9px;background:var(--soft);overflow:hidden;margin:5px 0 10px}.bar3 i{display:block;height:100%;background:#16a34a}
+.sample{background:#fff8e1;border:1px dashed #d69e2e;border-radius:14px;padding:10px 12px;margin:0 16px 12px;font-size:13px;color:#7a5200;font-weight:600}
+.lock{filter:grayscale(1);opacity:.6}
+
+/* ---- SemaChat brand: boot spinner + opening video ---- */
+.sema-spin{display:block;width:96px;height:96px;border-radius:24px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.boot::after{content:'';width:34px;height:34px;border:4px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:semaspin .9s linear infinite}
+@keyframes semaspin{to{transform:rotate(360deg)}}
+#home{position:fixed;inset:0;z-index:100000;background:linear-gradient(160deg,#1b2a4e,#3b2a63 55%,#0f4a4a);display:flex;flex-direction:column;align-items:center;color:#fff;font-family:system-ui,sans-serif}
+#home[hidden]{display:none!important}
+#home .hs-top{width:100%;max-width:430px;padding:14px 22px;display:flex;justify-content:space-between;font-size:14px;font-weight:600}
+#home .hs-grid{width:100%;max-width:430px;padding:30px 22px;display:grid;grid-template-columns:repeat(4,1fr);gap:26px 8px;justify-items:center}
+#home .hs-app{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;background:none;color:#fff;border:0}
+#home .hs-app i{width:62px;height:62px;border-radius:15px;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-size:28px;font-style:normal}
+#home .hs-app img{width:62px;height:62px;border-radius:15px;box-shadow:0 6px 16px rgba(0,0,0,.35)}
+#home .hs-app.me{animation:hspulse 1.6s ease-in-out infinite}
+@keyframes hspulse{50%{transform:scale(1.07)}}
+#home .hs-hint{margin-top:auto;margin-bottom:46px;font-size:13px;opacity:.8}
+.boot{display:flex;align-items:center;justify-content:center;height:100%;min-height:60vh;background:#22c000}
+#splash{position:fixed;inset:0;z-index:99999;background:#050814;display:flex;align-items:center;justify-content:center;transition:opacity .45s}
+#splash[hidden]{display:none!important}
+#splash.out{opacity:0;pointer-events:none}
+#splash video{width:100%;height:100%;object-fit:contain}
+#splash .spl-fallback{position:absolute;display:none}
+#splash.novid .spl-fallback{display:block}
+#splash .spl-skip{position:absolute;right:16px;bottom:22px;background:rgba(255,255,255,.18);color:#fff;border-radius:20px;padding:8px 16px;font-size:13px;backdrop-filter:blur(6px)}
+</style>
+</head>
+<body>
+<header class="top">
+  <b>{{HEADTITLE}}</b><small id="modeNote"></small>
+  <span class="sp"></span><!--CLIENTONLY--><button class="link" id="homeBtn" onclick="scHome()">📱 Phone home screen</button><!--/CLIENTONLY--><button class="link" data-act="reset" id="resetBtn">Reset demo data</button>
+</header>
+<main id="stage">
+  <!--CLIENTONLY--><div id="splash" hidden><video id="splashv" muted playsinline preload="auto" poster="{{SPLASH_POSTER}}" src="{{SPLASH_VIDEO}}"></video><img class="sema-spin spl-fallback" alt="SemaChat" src="{{ICON192}}"><button class="spl-skip" id="splskip" type="button">Skip</button></div>
+<div id="home" hidden><div class="hs-top"><span id="hsClock">9:41</span><span>5G ▮▮▮</span></div><div class="hs-grid"><button class="hs-app me" id="hsIcon" type="button"><img alt="SemaChat" src="{{ICON192}}">SemaChat</button><span class="hs-app"><i>📞</i>Phone</span><span class="hs-app"><i>📷</i>Camera</span><span class="hs-app"><i>🕒</i>Clock</span><span class="hs-app"><i>🗺️</i>Maps</span><span class="hs-app"><i>⚙️</i>Settings</span><span class="hs-app"><i>🖼️</i>Gallery</span><span class="hs-app"><i>🧮</i>Calculator</span></div><div class="hs-hint">Tap the green SemaChat icon to open the app</div></div>
+<script>(function(){var sp=document.getElementById('splash'),v=document.getElementById('splashv'),hm=document.getElementById('home');if(!sp)return;
+function done(){sp.classList.add('out');setTimeout(function(){sp.hidden=true},500);try{v.pause()}catch(e){}}
+function launch(){try{sessionStorage.setItem('sc_launched','1')}catch(e){}
+sp.classList.remove('out','novid');sp.hidden=false;document.getElementById('splskip').onclick=done;sp.onclick=done;
+v.addEventListener('ended',done);v.addEventListener('error',function(){sp.classList.add('novid');setTimeout(done,1800)});
+try{v.currentTime=0}catch(e){}var p=v.play();if(p&&p.catch)p.catch(function(){sp.classList.add('novid');setTimeout(done,1800)});
+setTimeout(done,11000)}
+var q=location.search,force=/[?&]splash=1/.test(q),seen=false,showHome={{SHOW_HOME}};
+try{seen=sessionStorage.getItem('sc_launched')==='1'}catch(e){}
+if(!force&&(seen||navigator.webdriver||/[?&]nosplash/.test(q))){return}
+if(showHome){hm.hidden=false;var d=new Date();document.getElementById('hsClock').textContent=d.getHours()+':'+('0'+d.getMinutes()).slice(-2);
+document.getElementById('hsIcon').onclick=function(){hm.hidden=true;launch()}}else{launch()}})();
+window.scHome=function(){try{sessionStorage.removeItem('sc_launched')}catch(e){}location.href=location.pathname+'?splash=1'};</script><!--/CLIENTONLY-->
+<div class="phone" id="phoneWrap"><div id="app"><div class="boot"></div></div></div>
+  <div id="admin" hidden></div>
+</main>
+<div id="toast"></div>
+<input type="file" id="fPhoto" accept="image/*" capture="environment" hidden>
+<input type="file" id="fVideo" accept="video/*" capture hidden>
+<input type="file" id="fFile" hidden>
+<!--CORE-->
+<script>
+'use strict';
+/* =============================== helpers & state =============================== */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=n=>'KES '+Math.round(n).toLocaleString('en-KE');
+const ago=ts=>{const s=(Date.now()-ts)/1000;if(s<60)return 'now';if(s<3600)return Math.floor(s/60)+'m';if(s<86400)return Math.floor(s/3600)+'h';return Math.floor(s/86400)+'d'};
+const tm=ts=>new Date(ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+const dt=ts=>new Date(ts).toLocaleDateString([],{day:'numeric',month:'short'});
+const mmss=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+String(Math.floor(s%60)).padStart(2,'0');
+const hsh=s=>{let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return h};
+const ini=n=>n.split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+const av=(u,s)=>{s=s||44;return `<div class="av" style="width:${s}px;height:${s}px;background:${u.color};font-size:${Math.round(s*.38)}px">${esc(ini(u.name))}${(u.tier||(u.verified?'green':(u.role==='user'?'yellow':'')))?`<i class="vf t-${u.tier||(u.verified?'green':'yellow')}">${{yellow:'!',green:'✓',gold:'★'}[u.tier||(u.verified?'green':'yellow')]}</i>`:''}</div>`};
+const mem={};const store={get(k){try{return localStorage.getItem(k)}catch(e){return mem[k]||null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){mem[k]=v}},del(k){try{localStorage.removeItem(k)}catch(e){delete mem[k]}}};
+const REMOTE=typeof window.SEMACHAT_API_BASE!=='undefined';
+let DB=null;
+if(!REMOTE){try{DB=JSON.parse(store.get('semachat_db_v1'))}catch(e){}if(!DB||!DB.users||DB.v!==2)DB=SemaChatCore.seed()}
+const DBsave=()=>{if(DB)store.set('semachat_db_v1',JSON.stringify(DB))};
+const S={pf:{},mc:null,mv:null,mm:{},mx:{},idn:null,mom:null,sup:null,loan:null,guard:null,loc:null,mode:window.SC_APP==='console'?'admin':'client',token:store.get('semachat_tok')||store.get('ubuntu_tok'),atok:store.get('semachat_atok')||store.get('ubuntu_atok'),me:null,tab:'home',stack:[],d:{},cs:'contacts',ex:'business',exTag:'All',scope:'contacts',pl:'today',
+  auth:{mode:'in',step:1,phone:'',code:'',name:'',email:'',role:'user',err:'',hint:''},sheet:null,call:null,rec:null,cart:[],blob:{},cat:'flights',
+  adm:{section:'overview',email:'admin@semachat.app',code:'',step:1,hint:'',err:''},a:{},f:{},np:{kind:'reel',caption:'',emoji:'🎬'},w:{amt:'',to:'',method:'M-Pesa'},cm:{text:''},pt:{title:''},gp:{name:''},q:'',pick:[],blk:null,draft:'',bc:'',eb:{}};
+const cur=()=>S.stack[S.stack.length-1];
+Object.assign(S,{cf:'all',cmode:'auto',carch:false,wm:'auto',nf:'auto',ws:null,nu:{normal:0,business:0},notifs:null,pf:null,disc:null,prev:null,peekr:'',xf:{from:'business',amt:''},po:{amt:''},tm:{id:''},bz:{dash:null,orders:[],rev:null,team:null,settings:null,status:null},reg:{step:0,name:'',category:'',area:'',kind:'informal',taxPin:'',wl:null,welcome:null,conc:null,err:'',more:false,edit:false,touched:false}});
+function setPath(p,v){const k=p.split('.');let o=S;for(let i=0;i<k.length-1;i++)o=o[k[i]];o[k[k.length-1]]=v}
+function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>t.style.display='none',2600)}
+const DEVICE='web-'+(store.get('semachat_dev')||(()=>{const d=Math.random().toString(36).slice(2,7);store.set('semachat_dev',d);return d})());
+let es=null;
+async function api(method,path,body,adm){
+  const tok=adm?S.atok:S.token;
+  if(REMOTE){
+    const r=await fetch(window.SEMACHAT_API_BASE+path,{method,headers:{'Content-Type':'application/json',Authorization:'Bearer '+(tok||''),'X-SemaChat-Device':DEVICE},body:body?JSON.stringify(body):undefined});
+    const j=await r.json().catch(()=>({}));if(!r.ok){const e=new Error(j.error||'Request failed');e.status=r.status;e.code=j.code;throw e}return j;
+  }
+  await new Promise(r=>setTimeout(r,40));
+  const r=SemaChatCore.handle(DB,method,path,body,tok,{'x-semachat-device':DEVICE,'x-client-ip':'preview'});DBsave();
+  if(r.status>=400){const e=new Error(r.data.error);e.status=r.status;e.code=r.data.code;throw e}return r.data;
+}
+async function guard(fn){try{return await fn()}catch(e){if(!adminMode()&&(e.status===503||(e.status===403&&/suspended/i.test(e.message)))){S.blk=e.message;render()}else if(e.status===401&&!adminMode()&&S.token){signOut(true)}else toast(e.message)}}
+const adminMode=()=>S.mode==='admin';
+function connectEvents(){
+  if(REMOTE){if(es)es.close();es=new EventSource('/api/stream?token='+encodeURIComponent(S.token));es.onmessage=e=>onEvent(JSON.parse(e.data))}
+  else{SemaChatCore.hooks.emit=(uid,ev)=>{if(S.me&&uid===S.me.id)onEvent(ev)};SemaChatCore.hooks.persist=DBsave}
+}
+const prev=m=>({text:m.text,voice:'🎤 Voice message',photo:'📷 Photo',video:'🎥 Video',file:'📎 '+(m.meta&&m.meta.name),contact:'👤 Contact card',location:'📍 Location',music:'🎵 '+(m.meta&&m.meta.title),call:(m.meta&&m.meta.mode==='video'?'🎥':'📞')+' Call'}[m.type]||m.text);
+const feat=k=>!S.me||S.me.features[k]!==false;
+
+/* =============================== data loading =============================== */
+/* =============================== DUAL MODE: data loading =============================== */
+const isBiz=()=>!!(S.me&&S.me.activeMode==='business');
+const NICON={chat:'💬',chat_biz:'💬',order:'📦',payment:'💰',review:'⭐',call:'📞',verification:'🪪',system:'📢',batch:'🗂️',ad:'📣',wallet:'👛'};
+const deadline=ts=>{const m=Math.max(0,Math.round((ts-Date.now())/60000));return m>=60?Math.floor(m/60)+'h '+(m%60)+'m':m+'m'};
+async function load(){
+  const v=cur(),k=v?v.n:S.tab,F=m=>feat(m);
+  const tryA=async(m,p)=>{try{return await api(m,p)}catch(e){return null}};
+  S.me=await api('GET','/api/me');
+  S.ws=await api('GET','/api/mode/widget-state');
+  const nr=await tryA('GET','/api/notifications');if(nr)S.nu=nr.unread;
+  if(k==='home'){if(F('planner'))S.d.planner=await tryA('GET','/api/planner')}
+  else if(k==='bhome'){S.bz.dash=await api('GET','/api/biz/dashboard')}
+  else if(k==='chats'||k==='chat'){if(F('chats')){
+    if(k==='chats')S.d.chats=await api('GET','/api/chats?mode='+(S.cmode==='all'?'all':'auto')+(S.carch?'&archived=1':''));
+    else{const all=await api('GET','/api/chats?mode=all');let ch=all.find(c=>c.id===v.id);if(!ch)ch=(await api('GET','/api/chats?mode=all&archived=1')).find(c=>c.id===v.id);
+      S.d.chat={ch,msgs:await api('GET','/api/chats/'+v.id+'/messages')}}}}
+  else if(k==='contacts'){S.d.contacts=await api('GET','/api/contacts');S.d.requests=await api('GET','/api/requests');
+    if(S.cs==='ana'&&F('ana'))S.d.feed=await api('GET','/api/feed?scope='+S.scope)}
+  else if(k==='explore'){if(F('explore'))S.d.explore=await api('GET','/api/explore?cat='+S.ex)}
+  else if(k==='me'){S.disc=S.me.hasBizAccount?null:await tryA('GET','/api/mode/discovery')}
+  else if(k==='wallet'){S.d.wallet=await api('GET','/api/wallet?mode='+S.wm);S.d.contacts=await api('GET','/api/contacts')}
+  else if(k==='money'){S.d.wallet=await api('GET','/api/wallet?mode=business');S.bz.rev=await tryA('GET','/api/wallet/biz/revenue?days=14');S.d.contacts=await api('GET','/api/contacts')}
+  else if(k==='orders'){S.bz.orders=await api('GET','/api/biz/orders')}
+  else if(k==='bset'){S.bz.settings=await api('GET','/api/biz/settings');S.bz.team=await api('GET','/api/biz/team');S.d.contacts=await api('GET','/api/contacts')}
+  else if(k==='notifs'){S.notifs=await api('GET','/api/notifications?mode='+S.nf);S.nu=S.notifs.unread}
+  else if(k==='prefs'){S.pf=await api('GET','/api/me/preferences')}
+  else if(k==='bizreg'){S.bz.status=await api('GET','/api/biz/status');if(!S.reg.welcome)S.reg.welcome=await api('GET','/api/biz/welcome');S.reg.conc=await tryA('GET','/api/biz/concierge-available');
+    const b=S.bz.status.business;if(b&&S.bz.status.status==='rejected'&&!S.reg.touched)Object.assign(S.reg,{name:b.name,category:b.category,kind:b.kind,taxPin:b.taxPin||'',touched:true,step:1})}
+  else if(k==='bizprev'){S.prev=await api('GET','/api/biz/preview?name='+encodeURIComponent(S.reg.name||''))}
+  else if(k==='financial'){S.d.fin=await api('GET','/api/financial')}
+  else if(k==='shop'){S.d.shop=await api('GET','/api/shop')}
+  else if(k==='travel'){S.d.services=await api('GET','/api/services');S.d.bookings=await api('GET','/api/bookings')}
+  else if(k==='plans'){S.d.plans=await api('GET','/api/plans');S.d.wallet=await api('GET','/api/wallet')}
+  else if(k==='analytics'){S.d.an=await api('GET','/api/analytics')}
+  else if(k==='planner'){S.d.planner=await api('GET','/api/planner')}
+}
+async function go(n,p){await guard(async()=>{S.stack.push(Object.assign({n},p||{}));await load();render()})}
+async function back(){await guard(async()=>{S.stack.pop();await load();render()})}
+async function setTab(t){await guard(async()=>{S.tab=t;S.stack=[];await load();render()})}
+async function refresh(){await guard(async()=>{await load();render()})}
+
+/* =============================== rendering: client =============================== */
+function render(){adminMode()?renderAdmin():renderClient();
+  $('#phoneWrap').style.display=adminMode()?'none':'';$('#admin').hidden=!adminMode();
+  $('#modeNote').textContent=REMOTE?'● connected to backend':'● preview mode — data saved in this browser';$('#resetBtn').style.display=REMOTE?'none':''}
+function renderClient(){
+  const app=$('#app');$('#phoneWrap').classList.toggle('biz',!!(S.token&&S.me&&S.me.activeMode==='business'));const dv=$('#msgin');if(dv)S.draft=dv.value;
+  if(S.blk){app.innerHTML=`<div class="blk"><b>🛠️</b><h2>${esc(S.blk)}</h2><p class="mut" style="margin:10px 0 20px">Please try again in a moment.</p><button class="btn" data-act="retry">Retry</button> <button class="btn alt" data-act="signout">Sign out</button></div>`;return}
+  if(!S.token||!S.me){app.innerHTML=authView();return}
+  const v=cur();const chat=v&&v.n==='chat';
+  app.innerHTML=`<div class="scr ${chat?'fx':''}" id="scr">${v?pageView(v):tabView()}</div>${chat?'':nav()}${S.sheet?sheetView():''}${S.call?callView():''}${window.overlayView?overlayView():''}`;
+  if(chat){const i=$('#msgin');if(i)i.value=S.draft||'';paintMsgs()}
+}
+function nav(){
+  const t=S.tab,m=S.me,b=isBiz();
+  const it=(k,e,l,bd)=>`<button class="${t===k&&!cur()?'on':''}" data-act="tab" data-t="${k}"><span>${e}</span>${l}${bd>0?`<i class="badge">${bd}</i>`:''}</button>`;
+  if(b)return `<nav class="nav">${it('bhome','📊','Dashboard',0)}${it('chats','💬','Inbox',m.unread)}${it('orders','📦','Orders',0)}${it('money','💰','Revenue',0)}${it('bset','🏪','Business',0)}</nav>`;
+  return `<nav class="nav">${it('home','🏠','Home',0)}${it('chats','💬','Chats',m.unread)}${it('contacts','👥','Contacts',m.requests)}${it('explore','🧭','Explore',0)}${it('me','🙋🏾','Me',0)}</nav>`;
+}
+function ph(title,right){return `<div class="ph"><button class="ib" data-act="back">‹</button><h2>${title}</h2>${right||''}</div>`}
+function tabView(){const m={home:homeView,chats:chatsView,contacts:contactsView,explore:exploreView,me:meView,bhome:bhomeView,orders:ordersView,money:moneyView,bset:bsetView};return (m[S.tab]||(isBiz()?bhomeView:homeView))()}
+function pageView(v){return ({chat:chatPage,wallet:walletPage,financial:financialPage,shop:shopPage,travel:travelPage,plans:plansPage,analytics:analyticsPage,planner:plannerPage,notifs:notifsPage,prefs:prefsPage,bizreg:bizregPage,bizprev:bizprevPage})[v.n](v)}
+function offBanner(k,name){return `<div class="empty"><b>🚧</b>${name} is temporarily switched off by SemaChat.<br><span class="sm">Check back soon.</span></div>`}
+
+/* ---- auth ---- */
+function authView(){
+  const a=S.auth,m=a.mode;
+  const f=(l,k,t,ph)=>`<label class="lb">${l}</label><input type="${t||'text'}" data-bind="auth.${k}" value="${esc(a[k])}" placeholder="${ph||''}" ${k==='code'?'maxlength="32" autocomplete="one-time-code" autocapitalize="characters" spellcheck="false" style="text-transform:uppercase;letter-spacing:6px;font-weight:800;font-size:20px;text-align:center"':''} ${a.step===2&&k!=='code'?'disabled':''}>`;
+  let fields='';
+  if(m==='up')fields=f('Full name','name','text','e.g. Amani Njoroge')+f('Email address (you will sign in with it)','email','email','you@example.com')+f('Phone number (optional)','phone','tel','0700 000 000')
+    +`<label class="lb">Account type</label><select data-bind="auth.role" ${a.step===2?'disabled':''}><option value="user" ${a.role==='user'?'selected':''}>Personal</option><option value="corporate" ${a.role==='corporate'?'selected':''}>Corporate / Business</option><option value="institution" ${a.role==='institution'?'selected':''}>Institution</option></select>`;
+  else fields=f('Email address','email','email','you@example.com');
+  const code=a.step===2?f('Verification code from your email','code','text','ABC123')+`<div class="hint">${esc(a.hint)}</div>`:'';
+  const go=a.step===1?`<button class="btn full" data-act="otp">Email me a verification code</button>`:`<button class="btn full" data-act="authgo">${m==='up'?'Verify email &amp; create my account':'Verify &amp; sign in'}</button><button class="btn alt full" data-act="authmode" data-m="${m}">Change details</button>`;
+  return `<div class="scr auth"><div class="logo">🌍</div><h1>SemaChat</h1><p class="tag">I am because we are.</p>
+  <div class="sub3" style="margin:0"><button class="${m==='in'?'on':''}" data-act="authmode" data-m="in">Sign in</button><button class="${m==='up'?'on':''}" data-act="authmode" data-m="up">Sign up</button></div>
+  <div class="fm">${fields}${code}${a.err?`<div class="err">${esc(a.err)}</div>`:''}${go}${window.SC_PREVIEW&&m==='in'?'<button class="btn alt full" data-act="teamdemo">⚡ Development team: enter without signing in</button>':''}</div>
+  <p class="mut sm" style="margin-top:16px">You sign in with your email and a 6-character code (capital letters and numbers) that SemaChat emails to you from login1@wavehub.co.ke. The code works for 5 minutes. Once in, you stay signed in, even when the app is closed or not in use, until you tap Sign out / change account.<br><b>Demo:</b> sign in as amani@mail.com with code 123ABC, or create your own account.</p></div>`;
+}
+
+/* ---- home ---- */
+/* ---- shared bits ---- */
+const bell=()=>{const c=S.nu?(S.nu[S.me.activeMode]||0):0;return `<button class="ib" data-act="go" data-p="notifs" style="position:relative" title="Notifications">🔔${c?`<i class="badge" style="position:absolute;top:-5px;right:-5px">${c}</i>`:''}</button>`};
+const txRow=t=>`<div class="li"><div class="fi" style="background:${t.type==='in'?'#e6f4ea':'#fdebd9'}">${t.kind==='cross_mode_transfer'?'⇄':t.type==='in'?'⬇️':'⬆️'}</div><div class="grow"><b class="sm ell" style="display:block">${esc(t.title)}</b><span class="mut sm"><i class="dot ${t.mode==='business'?'b':'n'}"></i> ${t.mode==='business'?'Business':'Normal'} • ${dt(t.ts)} ${tm(t.ts)}</span></div><b style="color:${t.type==='in'?'var(--green)':'var(--ink)'}">${t.type==='in'?'+':'−'}${money(t.amount).replace('KES ','')}</b></div>`;
+const orderBlock=o=>`<div style="margin-top:8px;padding:9px;background:var(--soft);border-radius:12px"><b class="sm">Order #${o.number}</b>${o.items.map(i=>`<div class="sm">• ${esc(i.name)} ×${i.qty} · ${money(i.price*i.qty)}</div>`).join('')}<div class="b" style="margin-top:4px">Total ${money(o.total)}</div>${o.status==='new'?`<div class="mut sm">⏱ ${deadline(o.deadline)} left to accept</div>`:`<span class="tagb ${o.status==='completed'?'':'o'}">${o.status}</span>`}</div>`;
+function modeWidget(){
+  const w=S.ws;if(!w)return '';const n=w.segments[0],b=w.segments[1],am=w.activeMode,st=w.bizState;
+  const seg=(s,cls,dot)=>`<button class="${am===s.id?'on '+cls:''} ${s.enabled?'':'dim'}" data-act="msw" data-v="${s.id}">${dot} ${s.label}${s.enabled?(s.badgeCount?`<small>${s.badgeCount}</small>`:''):`<small>${esc(s.ctaLabel||'Register')}</small>`}</button>`;
+  let cta='';
+  if(st.status!=='active'){
+    const map={register:['🚀','Grow your business on SemaChat'],continue_registration:['⏳','Your business is awaiting verification'],view_status:['⚠️','Your business account is suspended'],reactivate:['♻️','Your archived business can be restored']};
+    const m=st.status==='rejected'?['❌','Verification was not approved']:(map[st.ctaAction]||map.register);
+    cta=`<div class="mcta"><span style="font-size:20px">${m[0]}</span><div class="grow">${m[1]}${st.rejectReason?`<div class="err sm">${esc(st.rejectReason)}</div>`:''}</div><button class="btn sm" data-act="bizcta" data-v="${st.ctaAction}">${esc(st.ctaLabel||'Register')}</button></div>`;
+  }
+  return `<div class="mw"><div class="mseg">${seg(n,'','🔵')}${seg(b,'biz','🟢')}</div>${cta}</div>`;
+}
+
+/* ---- home (normal) ---- */
+function homeView(){
+  const m=S.me,pl=S.d.planner,tasks=pl?pl.tasks.filter(t=>!t.done).slice(0,3):[];
+  const hr=new Date().getHours(),g=hr<12?'Habari za asubuhi':hr<18?'Habari za mchana':'Habari za jioni';
+  const W=(k,bg,e,t,p,badge,feature)=>`<button class="wt ${feat(feature)?'':'off'}" style="background:${bg}" data-act="${feat(feature)?'tab':'off'}" data-t="${k}">${badge>0?`<i class="badge">${badge}</i>`:''}<span class="e">${e}</span><div><h3>${t}</h3><p>${p}</p></div></button>`;
+  return `<div class="hero row"><div class="grow"><h1>${g}, ${esc(m.name.split(' ')[0])} 👋🏾</h1><p>${new Date().toLocaleDateString([],{weekday:'long',day:'numeric',month:'long'})}</p></div>${bell()}</div>
+  ${m.announcement?`<div class="ann"><b>📢 From SemaChat:</b> ${esc(m.announcement.text)}</div>`:''}
+  ${modeWidget()}
+  <div class="wg">${W('chats','linear-gradient(135deg,#c2410c,#f59e0b)','💬','Chats','Text, voice, calls, groups',m.unread,'chats')}
+  ${W('contacts','linear-gradient(135deg,#6b46c1,#b83280)','👥','Contacts & AnA','Friends, reels & your Tube',m.requests,'chats')}
+  ${W('explore','linear-gradient(135deg,#2b6cb0,#0f766e)','🧭','Explore','Business & entertainment',0,'explore')}
+  ${W('me','linear-gradient(135deg,#2f855a,#1f1b2e)','🙋🏾','Me',money(m.balance)+' in wallet',0,'wallet')}
+  <button class="wt wide ${feat('planner')?'':'off'}" style="background:#fff;color:var(--ink);box-shadow:0 1px 0 var(--line)" data-act="${feat('planner')?'openplanner':'off'}"><div class="row" style="justify-content:space-between;width:100%"><h3>📅 My Life Planner</h3><span class="mut sm">Open ›</span></div>
+   <div class="col" style="gap:7px;margin-top:6px;width:100%">${tasks.length?tasks.map(t=>`<div class="row"><span class="chk">○</span><span class="grow ell">${esc(t.title)}</span><span class="mut sm">${esc(t.when)}</span></div>`).join(''):'<span class="mut">Nothing pending. Enjoy your day ✨</span>'}</div></button></div>`;
+}
+
+/* ---- home (business) ---- */
+function bhomeView(){
+  const d=S.bz.dash;if(!d)return '<div class="empty">Loading…</div>';
+  const k=d.kpis,b=d.business,m=S.me,tools=[['chat','💬 Customer chat'],['order','📦 New order'],['big','💎 Big order (>KES 5,000)'],['review','⭐ 5★ review'],['bad','😡 1★ review'],['call','📞 Incoming call'],['normal_chat','🔵 Personal message']];
+  return `<div class="hero row"><div class="grow"><h1>${esc(b.name)}</h1><p>${d.isOwner?'Owner':'Team member'} • ${b.kind==='formal'?'Registered':'Informal'} business${m.verified?' • Verified ✓':''}</p></div>${bell()}</div>
+  ${modeWidget()}
+  <div class="kpis" style="margin-top:12px"><div class="kpi"><b>${k.newOrders}</b><span>New orders to accept</span></div><div class="kpi"><b>${k.ordersToday}</b><span>Orders today</span></div><div class="kpi"><b>${money(k.revenue30).replace('KES ','')}</b><span>Revenue (30 days, KES)</span></div><div class="kpi"><b>${k.unreadInbox}</b><span>Unread in shared inbox</span></div></div>
+  <div class="row" style="padding:12px 16px"><button class="btn grow" data-act="tab" data-t="orders">📦 Review orders</button><button class="btn alt grow" data-act="tab" data-t="chats">💬 Open inbox</button></div>
+  <div class="card" style="margin:0 16px 12px"><b>👥 Shared inbox</b><div class="mut sm" style="margin-top:3px">You and ${d.team} teammate${d.team===1?'':'s'} see the same customer chats; each person keeps their own unread count.</div></div>
+  <div class="sec">🧪 Demo: simulate customers</div><div class="chips" style="flex-wrap:wrap;overflow:visible;padding:0 16px 10px">${tools.map(t=>`<button class="chip" data-act="sim" data-k="${t[0]}">${t[1]}</button>`).join('')}</div>
+  <p class="mut sm" style="padding:0 16px">Tip: simulate an order, then switch to Normal mode and simulate again. The notification arrives silently, and the badge updates.</p>`;
+}
+
+/* ---- chats ---- */
+function chatSub(ch){
+  if(ch.type==='group')return ch.members.length+' members'+(ch.isCrossMode?' • 🌐 both modes':'');
+  if(ch.other&&ch.other.phoneHidden)return '📵 Customer · phone hidden until first order';
+  if(ch.ai)return '🤖 Works in both modes';
+  return ch.isBizChat?(ch.modeContext==='business'?'🏪 Customer chat':'🏪 Business chat'):'';
+}
+function chatsView(){
+  if(!feat('chats'))return offBanner('chats','Chats');
+  const list=S.d.chats||[],f=S.cf||'all',biz=isBiz();
+  const shown=list.filter(c=>f==='all'||(f==='direct'&&c.type==='direct')||(f==='group'&&c.type==='group'));
+  const tag=c=>(c.isCrossMode?'<span class="tagb b">🌐 Both modes</span> ':'')+(S.cmode==='all'&&!c.isCrossMode?`<span class="tagb ${c.modeContext==='business'?'':'b'}">${c.modeContext==='business'?'Business':'Normal'}</span> `:'');
+  return `<div class="lh">${biz?'Business inbox':'Chats'}<span style="flex:1"></span>${biz?'':`<button class="ib" data-act="newgroup" title="New group">👥</button><button class="ib" data-act="conf" title="Conference call">📞</button>`}${bell()}</div>
+  <div class="chips" style="padding-left:16px">${['all','direct','group'].map(x=>`<button class="chip ${f===x?'on':''}" data-act="qf" data-v="${x}">${{all:'All',direct:'Direct',group:'Groups'}[x]}</button>`).join('')}<button class="chip ${S.cmode==='all'?'on':''}" data-act="cmode">🔀 All modes</button><button class="chip ${S.carch?'on':''}" data-act="carch">🗄️ Archived</button></div>
+  ${shown.length?shown.map(c=>`<div class="li" data-act="openchat" data-id="${c.id}">${c.other?av(c.other,50):`<div class="av" style="width:50px;height:50px;background:${c.color};font-size:22px">👥</div>`}
+   <div class="grow"><div class="row"><b class="grow ell">${esc(c.name)}</b><span class="mut sm">${c.last?ago(c.last.ts):''}</span></div>
+   <div class="row"><span class="mut ell grow">${tag(c)}${c.last?(c.last.from===S.me.id?'You: ':'')+esc(prev(c.last)):'No messages yet'}</span>${c.unread?`<i class="badge">${c.unread}</i>`:''}</div></div></div>`).join(''):`<div class="empty"><b>${S.carch?'🗄️':'💬'}</b>${S.carch?'No archived chats.':biz?'No customer chats yet. Use the demo tools on the Dashboard.':'No chats yet. Start from Contacts.'}</div>`}`;
+}
+
+/* ---- wallet ---- */
+function walletPage(){
+  const w=S.d.wallet;if(!w)return ph('Wallet');
+  const modes=[['auto','This mode'],['normal','Normal']].concat(S.me.hasBizAccount?[['business','Business']]:[]).concat([['all','All']]);
+  return ph('Wallet')+`<div class="wal"><div class="sm" style="opacity:.8">Available balance · same in both modes</div><div class="bal">${money(w.balance)}</div><div class="row wrap"><button class="btn sm" style="background:#fff;color:var(--ink)" data-act="topup">＋ Top up</button><button class="btn sm" style="background:#ffffff33" data-act="sendmoney">➤ Send</button>${S.me.isBizOwner?`<button class="btn sm" style="background:#ffffff33" data-act="xfer">⇄ Move between modes</button>`:''}</div></div>
+  <div class="chips" style="padding-top:12px">${modes.map(x=>`<button class="chip ${S.wm===x[0]?'on':''}" data-act="wm" data-v="${x[0]}">${x[1]}</button>`).join('')}</div>
+  <div class="sec">Transactions • ${w.mode==='all'?'all modes':w.mode}</div>${w.tx.map(txRow).join('')||'<div class="empty">No transactions in this view.</div>'}`;
+}
+function moneyView(){
+  const w=S.d.wallet,r=S.bz.rev;if(!w)return '<div class="empty">Loading…</div>';
+  const own=S.me.isBizOwner,max=r?Math.max.apply(null,r.series.map(x=>x.revenue).concat([1])):1;
+  return `<div class="lh">Revenue</div><div class="wal"><div class="sm" style="opacity:.8">Wallet balance · same as in Normal mode</div><div class="bal">${money(w.balance)}</div><div class="row wrap"><button class="btn sm" style="background:#fff;color:var(--ink)" data-act="topup">＋ Top up</button>${own?`<button class="btn sm" style="background:#ffffff33" data-act="xfer">⇄ Owner draw / capital</button><button class="btn sm" style="background:#ffffff33" data-act="payout">🏦 Payout</button>`:''}</div></div>
+  ${r?`<div class="kpis" style="margin-top:12px"><div class="kpi"><b>${money(r.revenue).replace('KES ','')}</b><span>Revenue, 14 days (KES)</span></div><div class="kpi"><b>${r.orders}</b><span>Paid orders</span></div><div class="kpi"><b>${money(r.avgOrder).replace('KES ','')}</b><span>Average order (KES)</span></div><div class="kpi"><b>${money(r.taxCollected).replace('KES ','')}</b><span>VAT collected (KES)</span></div></div>
+  <div class="card" style="margin:12px 16px"><b>Daily revenue</b>${bars(r.series.map(x=>x.revenue),{h:80,labels:r.series.map(x=>x.date.slice(8)),fmt:money,color:'#16a34a'})}<div class="mut sm" style="margin-top:4px">Refunds ${money(r.refunds)} · Ad spend ${money(r.adSpend)} · Payouts ${money(r.payouts)}</div></div>
+  <div class="row" style="padding:0 16px 8px;flex-wrap:wrap"><span class="chip">Payout: ${esc(r.payoutSchedule)}</span><span class="chip">${r.bankLinked?'🏦 Bank linked':'No bank linked'}</span><button class="btn sm alt" data-act="exportcsv">⬇ Export CSV</button></div>`:`<div class="sample" style="margin-top:12px">Only the business owner sees revenue analytics. Team members see the business ledger below.</div>`}
+  <div class="sec">Business ledger</div>${w.tx.map(txRow).join('')||'<div class="empty">No business transactions yet.</div>'}`;
+}
+
+/* ---- orders ---- */
+function ordersView(){
+  const l=S.bz.orders||[];
+  return `<div class="lh">Orders<span style="flex:1"></span>${bell()}</div>`+(l.length?l.map(o=>`<div class="ordc"><div class="row"><b class="grow">#${o.number} · ${esc(o.customer.name)}</b><span class="tagb ${o.status==='new'?'o':o.status==='completed'?'':'b'}">${o.status}</span></div><div class="mut sm" style="margin:4px 0">${o.items.map(i=>i.qty+'× '+esc(i.name)).join(', ')}</div><div class="row wrap"><b class="grow">${money(o.total)}</b>${o.status==='new'?`<span class="mut sm">⏱ ${deadline(o.deadline)}</span><button class="btn sm" data-act="ordok" data-id="${o.id}">Accept</button><button class="btn sm alt" data-act="ordno" data-id="${o.id}">Reject</button>`:o.status==='completed'?`<button class="btn sm alt" data-act="invoice" data-id="${o.id}">🧾 Invoice</button>`:''}</div></div>`).join(''):'<div class="empty"><b>📦</b>No orders yet. Simulate one from the Dashboard.</div>');
+}
+
+/* ---- business settings ---- */
+function bsetView(){
+  const s=S.bz.settings,t=S.bz.team;if(!s||!t)return '<div class="empty">Loading…</div>';
+  const own=t.isOwner,ids=t.members.map(x=>x.id),cands=(S.d.contacts||[]).filter(c=>c.role!=='system'&&!ids.includes(c.id)&&c.id!==t.ownerId);
+  return `<div class="lh">Business</div>
+  <div class="card" style="margin:0 16px 10px"><div class="row"><span style="font-size:30px">🏪</span><div class="grow"><b>${esc(s.name)}</b><div class="mut sm">${esc(s.category)} • ${s.kind==='formal'?'Registered · PIN '+esc(s.taxPin||''):'Informal'}</div></div><span class="tagb">${esc(s.status)}</span></div></div>
+  <div class="sec">Team inbox (${t.members.length}/${t.max})</div>
+  <div style="padding:0 16px">${t.members.length?t.members.map(m=>`<div class="opt">${av(m,36)}<b class="grow">${esc(m.name)}</b>${own?`<button class="btn sm alt" data-act="rmteam" data-id="${m.id}">Remove</button>`:''}</div>`).join(''):'<div class="mut sm" style="padding:6px 0">No teammates yet.</div>'}
+  ${own&&t.members.length<t.max?`<div class="row" style="margin-top:8px"><select data-bind="tm.id"><option value="">Add from contacts…</option>${cands.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('')}</select><button class="btn sm" data-act="addteam">Add</button></div>`:''}</div>
+  ${own?`<div class="sec">Inbox access</div><div class="row" style="padding:0 16px"><button class="chip ${s.inboxAccess==='all'?'on':''}" data-act="inbox" data-v="all">Everyone sees all chats</button><button class="chip ${s.inboxAccess==='assigned_only'?'on':''}" data-act="inbox" data-v="assigned_only">Assigned only</button></div>
+  <div class="sec">Payouts</div><div class="row wrap" style="padding:0 16px">${['weekly','monthly','manual'].map(x=>`<button class="chip ${s.payoutSchedule===x?'on':''}" data-act="sched" data-v="${x}">${x}</button>`).join('')}<button class="chip ${s.bankLinked?'on':''}" data-act="bank">${s.bankLinked?'🏦 Bank linked':'Link a bank'}</button></div>`:''}
+  <div class="sec">Settings</div><div class="li" data-act="go" data-p="prefs"><div class="fi" style="background:var(--soft)">⚙️</div><div class="grow"><b>Mode & notification settings</b><div class="mut sm">Auto-switch, silent alerts, quiet hours</div></div>›</div>
+  ${own?`<div style="padding:12px 16px"><button class="btn alt full" style="color:var(--red);border-color:var(--red)" data-act="deact">Deactivate business…</button></div>`:''}`;
+}
+
+/* ---- notifications, prefs ---- */
+function notifsPage(){
+  const d=S.notifs;if(!d)return ph('Notifications');
+  const other=S.nu?(S.nu[S.me.activeMode==='business'?'normal':'business']||0):0;
+  return ph('Notifications',`<button class="chip" data-act="markread">Mark all read</button>`)+`<div class="chips"><button class="chip ${S.nf==='auto'?'on':''}" data-act="nf" data-v="auto">${isBiz()?'🟢 Business':'🔵 Normal'}</button><button class="chip ${S.nf==='all'?'on':''}" data-act="nf" data-v="all">All modes${other?` · ${other} in ${isBiz()?'Normal':'Business'}`:''}</button></div>`
+   +(d.items.map(n=>`<div class="nrow ${n.read?'':'unread'}" data-act="opennotif" data-id="${n.id}" data-b="${n.isBatch?1:0}"><div class="ni" style="background:${n.mode==='business'?'#dcfce7':'#e3eefb'}">${NICON[n.type]||'🔔'}</div><div class="grow"><div class="row"><b class="grow sm">${esc(n.title)}</b><span class="mut sm">${ago(n.ts)}</span></div><div class="sm ${n.read?'mut':''}">${esc(n.body)}</div><div class="mut sm"><i class="dot ${n.mode==='business'?'b':'n'}"></i> ${n.mode==='business'?'Business':'Normal'}${n.urgent?' · ⚡ critical':''}${n.isBatch?' · '+n.count+' updates':''}</div></div></div>`).join('')||'<div class="empty"><b>🔔</b>You are all caught up.</div>');
+}
+function prefsPage(){
+  const p=S.pf;if(!p)return ph('Settings');
+  const sw=(k,on)=>`<label class="sw"><input type="checkbox" data-act="pfset" data-k="${k}" ${on?'checked':''}><span></span></label>`;
+  const as=p.autoSwitch===true?'true':p.autoSwitch===false?'false':'critical_only';
+  const dnd=(m,l)=>{const d=p.dnd[m];return `<div class="card" style="margin:0 16px 10px"><div class="row"><b class="grow">${l} quiet hours</b>${sw('dnd.'+m+'.enabled',d.enabled)}</div><div class="row" style="margin-top:8px"><input type="time" data-onchg="pfsel" data-k="dnd.${m}.start" value="${d.start}"><span class="mut">to</span><input type="time" data-onchg="pfsel" data-k="dnd.${m}.end" value="${d.end}"></div><div class="row" style="margin-top:8px"><span class="grow sm">Critical alerts still ring</span>${sw('dnd.'+m+'.critical',d.critical!==false)}</div></div>`};
+  return ph('Mode & notifications')+`<div class="sec">Tapping a notification from the other mode</div><div style="padding:0 16px"><select data-onchg="pfsel" data-k="autoSwitch"><option value="critical_only" ${as==='critical_only'?'selected':''}>Switch mode only for critical alerts (recommended)</option><option value="true" ${as==='true'?'selected':''}>Always switch mode</option><option value="false" ${as==='false'?'selected':''}>Always peek first, never switch</option></select><div class="mut sm" style="margin-top:6px">Critical: calls, orders over KES 5,000, 1–2★ reviews, failed payments, verification changes.</div></div>
+  <div class="sec">Silent alerts</div><div style="padding:0 16px"><div class="opt"><div class="grow"><b class="sm">Business alerts while in Normal mode</b><div class="mut sm">Badge only, no sound or banner</div></div>${sw('silentBizInNormal',p.silentBizInNormal)}</div><div class="opt"><div class="grow"><b class="sm">Normal alerts while in Business mode</b><div class="mut sm">Badge only, no sound or banner</div></div>${sw('silentNormalInBiz',p.silentNormalInBiz)}</div></div>
+  <div class="sec">Quiet hours per mode</div>${dnd('normal','Normal')}${dnd('business','Business')}`;
+}
+
+/* ---- business registration + sample dashboard ---- */
+const BCATS=[['pharmacy','Pharmacy'],['cafe','Café & coffee'],['restaurant','Restaurant'],['retail','Retail shop'],['salon','Salon & beauty'],['electronics','Electronics'],['design','Design & services'],['wellness','Health & wellness']];
+const BAREAS=[['westlands','Westlands'],['parklands','Parklands'],['cbd','Nairobi CBD'],['nanyuki','Nanyuki'],['kisumu','Kisumu']];
+function bizregPage(){
+  const r=S.reg,st=S.bz.status;if(!st||!r.welcome)return ph('Business');
+  const w=r.welcome;let body='';
+  if(st.status==='active')body=`<div class="empty"><b>✅</b>Your business <b>${esc(st.business.name)}</b> is active.</div><div style="padding:0 16px"><button class="btn full" data-act="msw" data-v="business">Switch to Business mode</button></div>`;
+  else if(st.status==='pending'&&!r.edit)body=`<div class="empty"><b>⏳</b><h3>Under review</h3><p class="mut" style="margin:6px 0">We are verifying <b>${esc(st.business.name)}</b>. This usually takes under a day. You can keep using SemaChat normally in the meantime.</p></div><div class="sample">Demo: open the Developer Console → Businesses to approve it, then come back and tap Business.</div><div class="col" style="padding:0 16px"><button class="btn alt full" data-act="regedit">Edit my details</button></div>`;
+  else if(st.status==='suspended')body=`<div class="empty"><b>⚠️</b><h3>Account suspended</h3><p class="mut">Contact support at help@semachat.app for next steps.</p></div>`;
+  else if(r.step===0)body=`<div class="pad"><h2>${esc(w.headline)}</h2><div class="sec" style="padding-left:0">Why Business mode</div><ul style="margin-left:18px;line-height:1.6">${w.benefits.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>${r.more?`<div class="sec" style="padding-left:0">What you need</div><ul style="margin-left:18px;line-height:1.6">${w.requirements.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}</div>
+   ${r.conc&&r.conc.available?`<div class="card" style="margin:0 16px 10px"><b>📞 Free setup call</b><div class="mut sm">You are among the first 100 businesses (${r.conc.slotsUsed}/${r.conc.slotsTotal} slots used).</div><button class="btn sm alt" style="margin-top:6px" data-act="concbook">Book a setup call</button></div>`:''}
+   <div class="col" style="padding:0 16px"><button class="btn full" data-act="regstart">${esc(w.ctaButtons[0].label)}</button><button class="btn alt full" data-act="reglearn">${esc(w.ctaButtons[1].label)}</button><button class="btn alt full" data-act="go" data-p="bizprev">👀 See a sample dashboard</button><button class="chip" style="align-self:center" data-act="back">${esc(w.ctaButtons[2].label)}</button></div>`;
+  else{const wl=r.wl;
+    body=`<div class="pad col">${st.status==='rejected'?`<div class="err">Previous submission: ${esc(st.rejectReason||'not approved')}. Please fix and resubmit.</div>`:''}
+    <label class="lb">Business name</label><input data-bind="reg.name" value="${esc(r.name)}" placeholder="e.g. Amani Pharmacy">
+    <label class="lb">Category</label><select data-bind="reg.category" data-onchg="chkwait"><option value="">Choose…</option>${BCATS.map(c=>`<option value="${c[0]}" ${r.category===c[0]?'selected':''}>${c[1]}</option>`).join('')}</select>
+    <label class="lb">Area</label><select data-bind="reg.area" data-onchg="chkwait"><option value="">Choose…</option>${BAREAS.map(c=>`<option value="${c[0]}" ${r.area===c[0]?'selected':''}>${c[1]}</option>`).join('')}</select>
+    ${wl&&wl.isSaturated?`<div class="card" style="border:1.5px solid #d69e2e"><b>⚠️ ${esc(wl.category)} is crowded in ${esc(wl.area)}</b><div class="mut sm">${wl.businessesWithin2km} businesses within 2 km. Pick an option:</div>${wl.alternativeActions.map(a=>`<button class="btn sm alt" style="margin-top:6px;display:block;width:100%" data-act="wlalt" data-v="${a.type}">${esc(a.label)}</button>`).join('')}</div>`:(wl?`<div class="hint" style="background:#e6f4ea;border-color:#38a169;color:#276749">✅ Room for another ${esc(wl.category)} in ${esc(wl.area)}.</div>`:'')}
+    <label class="lb">Business type</label><div class="row"><button class="chip ${r.kind==='informal'?'on':''}" data-act="regkind" data-v="informal">Informal / individual</button><button class="chip ${r.kind==='formal'?'on':''}" data-act="regkind" data-v="formal">Registered company</button></div>
+    ${r.kind==='formal'?`<label class="lb">Tax PIN</label><input data-bind="reg.taxPin" value="${esc(r.taxPin)}" placeholder="P051234567X">`:''}
+    ${r.err?`<div class="err">${esc(r.err)}</div>`:''}<button class="btn full" data-act="doreg">${st.status==='rejected'?'Resubmit for verification':'Submit for verification'}</button></div>`;}
+  return ph('SemaChat for Business')+body;
+}
+function bizprevPage(){
+  const p=S.prev;if(!p)return ph('Sample dashboard');
+  const reg=!S.me.hasBizAccount;
+  const cta=reg?`<div style="padding:0 16px 12px"><button class="btn full" data-act="bizcta" data-v="register">Start registration</button></div>`:'';
+  return ph('Sample dashboard')+`<div class="sample">${esc(p.banner)}</div>${cta}<div class="pad" style="padding-top:0"><h2>${esc(p.businessName)}</h2></div>
+  <div class="kpis"><div class="kpi"><b>${money(p.kpis.revenueLastMonth).replace('KES ','')}</b><span>Revenue last month (KES)</span></div><div class="kpi"><b>${p.kpis.orders}</b><span>Orders</span></div><div class="kpi"><b>${money(p.kpis.avgOrder).replace('KES ','')}</b><span>Average order</span></div><div class="kpi"><b>${p.kpis.rating}★</b><span>Rating</span></div></div>
+  <div class="card" style="margin:12px 16px"><b>Revenue, last 14 days</b>${bars(p.chart,{h:80,color:'#16a34a',fmt:money})}</div>
+  <div class="sec">Recent orders</div>${p.orders.map(o=>`<div class="li"><div class="fi" style="background:var(--soft)">📦</div><div class="grow"><b class="sm">${esc(o.customer)}</b><div class="mut sm">${esc(o.items)} · ${o.status}</div></div><b>${money(o.total)}</b></div>`).join('')}
+  <div class="sec">Reviews</div>${p.reviews.map(o=>`<div class="li"><div class="fi" style="background:#fef3c7">⭐</div><div class="grow"><b class="sm">${esc(o.name)} · ${o.rating}★</b><div class="mut sm">${esc(o.text)}</div></div></div>`).join('')}${cta}`;
+}
+
+/* ---- Me tab: business + notifications entries ---- */
+function discoveryCards(){
+  const e=(S.disc&&S.disc.entries)||[];
+  if(!e.length)return `<div class="card"><b>Grow your business on SemaChat</b><div class="mut sm" style="margin:3px 0 8px">A shared inbox, orders, invoices with VAT and a verified badge.</div><button class="btn sm" data-act="disc" data-t="generic">Register</button></div>`;
+  const p=e[0];
+  return `<div class="card"><b>${esc(p.label)}</b><div class="mut sm" style="margin:3px 0 8px">Register once and switch between Normal and Business with one tap.</div><button class="btn sm" data-act="disc" data-t="${p.type}">${p.type==='maps_claim'?'Claim this page':p.type==='informal_upgrade'?'Upgrade now':'Start registration'}</button></div>`+e.slice(1).map(x=>`<button class="chip" style="align-self:flex-start" data-act="disc" data-t="${x.type}">${esc(x.label)}</button>`).join('');
+}
+function meExtra(){
+  const m=S.me,st=S.ws?S.ws.bizState:{status:'none'};let biz;
+  if(m.hasBizAccount)biz=`<div class="card row"><span style="font-size:26px">🏪</span><div class="grow"><b>Business mode is on</b><div class="mut sm">Switch from the mode widget on Home</div></div><button class="btn sm" data-act="msw" data-v="business">Open</button></div>`;
+  else if(st.status!=='none'||st.canReactivate)biz=`<div class="card row"><span style="font-size:26px">${st.status==='pending'?'⏳':st.canReactivate?'♻️':st.status==='rejected'?'❌':'⚠️'}</span><div class="grow"><b>${st.canReactivate?'Business archived':st.status==='pending'?'Awaiting verification':st.status==='rejected'?'Verification not approved':'Business suspended'}</b></div><button class="btn sm" data-act="bizcta" data-v="${st.ctaAction}">${esc(st.ctaLabel||'Open')}</button></div>`;
+  else biz=discoveryCards();
+  const un=S.nu?(S.nu.normal+S.nu.business):0;
+  return `<div class="sec">SemaChat for Business</div><div style="padding:0 16px" class="col">${biz}<button class="btn alt sm" data-act="go" data-p="bizprev">👀 See a sample business dashboard</button></div>
+  <div class="sec">Notifications & modes</div><div class="li" data-act="go" data-p="notifs"><div class="fi" style="background:var(--soft)">🔔</div><div class="grow"><b>Notifications</b><div class="mut sm">${un} unread across both modes</div></div>›</div><div class="li" data-act="go" data-p="prefs"><div class="fi" style="background:var(--soft)">⚙️</div><div class="grow"><b>Mode & notification settings</b><div class="mut sm">Auto-switch, silent alerts, quiet hours</div></div>›</div>`;
+}
+
+/* ---- chats ---- */
+function chatPage(v){
+  const c=S.d.chat;if(!c||!c.ch)return ph('Chat')+'<div class="empty">Chat not found</div>';
+  const ch=c.ch;
+  return `<div class="ph" style="border-bottom:1px solid var(--line)"><button class="ib" data-act="back">‹</button>${ch.other?av(ch.other,40):`<div class="av" style="width:40px;height:40px;background:${ch.color}">👥</div>`}
+   <div class="grow"><b class="ell" style="display:block">${esc(ch.name)}</b><span class="mut sm">${chatSub(ch)}</span></div>
+   <button class="ib" data-act="call" data-m="voice">📞</button><button class="ib" data-act="call" data-m="video">🎥</button></div>
+  <div class="msgs" id="msgs"></div><div id="composer">${composer()}</div>`;
+}
+function composer(){
+  if(S.rec)return `<div class="recb"><i class="rd"></i><b id="rect">${mmss((Date.now()-S.rec)/1000)}</b><span class="mut grow">Recording voice message…</span><button class="ib" data-act="recx">🗑️</button><button class="ib" style="background:var(--brand);color:#fff" data-act="recsend">➤</button></div>`;
+  return `<div class="comp"><button class="ib" data-act="attach">＋</button><input id="msgin" placeholder="Message" autocomplete="off"><button class="ib" data-act="recstart">🎤</button><button class="ib send" data-act="sendtxt">➤</button></div>`;
+}
+function bubble(m,ch){
+  const mine=m.from===S.me.id,s=ch.members.find(x=>x.id===m.from)||{name:'?',color:'#888'},mt=m.meta||{};let b='';
+  switch(m.type){
+    case 'text':b=esc(m.text);break;
+    case 'voice':b=`<div class="vw"><span class="pl" data-act="playv">▶</span><div class="wave">${Array.from({length:22},(_,i)=>`<i style="height:${6+Math.abs(Math.sin(hsh(m.id)+i))*18}px"></i>`).join('')}</div><span class="sm">${mmss(mt.dur||0)}</span></div>`;break;
+    case 'photo':b=`<div class="pic" style="background-image:${mt.thumb?`url(${mt.thumb})`:`linear-gradient(135deg,${(mt.g||['#ed8936','#744210']).join(',')})`}">${mt.thumb?'':esc(mt.emoji||'🖼️')}</div>${m.text?esc(m.text):''}`;break;
+    case 'video':b=S.blob[m.id]?`<video src="${S.blob[m.id]}" controls style="width:210px;border-radius:12px"></video>`:`<div class="pic" style="background-image:linear-gradient(135deg,#44337a,#1a202c)">🎞️<span class="pp">▶</span><span class="dur">${mmss(mt.dur||0)}</span></div>`;break;
+    case 'file':b=`<div class="fcard"><div class="fi">📄</div><div class="grow"><b class="sm">${esc(mt.name)}</b><div class="sm" style="opacity:.75">${esc(mt.size||'')}</div></div></div>`;break;
+    case 'contact':b=`<div class="ccard"><div class="fi">👤</div><div class="grow"><b class="sm">${esc(mt.name)}</b><div class="sm" style="opacity:.8">${esc(mt.phone)}</div></div><button class="chip" data-act="savecontact">Save</button></div>`;break;
+    case 'location':b=`<div class="map">📍</div><b class="sm">${esc(mt.label||'Pinned location')}</b><div class="sm" style="opacity:.75">${mt.lat}, ${mt.lng} • <a style="color:inherit" target="_blank" rel="noopener" href="https://www.openstreetmap.org/?mlat=${mt.lat}&mlon=${mt.lng}#map=15/${mt.lat}/${mt.lng}">Open map</a></div>`;break;
+    case 'music':b=`<div class="mcard"><div class="fi">🎵</div><div class="grow"><b class="sm">${esc(mt.title)}</b><div class="sm" style="opacity:.8">${esc(mt.artist)} • ${mmss(mt.dur||0)}</div></div><span class="pl chip" data-act="playm">▶</span></div>`;break;
+    case 'call':b=`<div class="callrow">${mt.mode==='video'?'🎥':'📞'} ${mt.mode==='video'?'Video':'Voice'} call${mt.count>2?' • '+mt.count+' people':''} • ${mt.dur?mmss(mt.dur):'No answer'}</div>`;break;
+  }
+  return `<div class="bb ${mine?'me':'them'}">${!mine&&ch.type==='group'?`<div class="sn" style="color:${s.color}">${esc(s.name)}</div>`:''}${b}<div class="bt">${tm(m.ts)}</div></div>`;
+}
+function paintMsgs(){const el=$('#msgs'),c=S.d.chat;if(!el||!c)return;el.innerHTML=c.msgs.map(m=>bubble(m,c.ch)).join('')||'<div class="empty">Say hello 👋🏾</div>';el.scrollTop=el.scrollHeight}
+async function sendMsg(type,text,meta){const c=S.d.chat;return guard(async()=>{const m=await api('POST','/api/chats/'+c.ch.id+'/messages',{type,text,meta});c.msgs.push(m);paintMsgs();return m})}
+
+/* ---- contacts + AnA ---- */
+function contactsView(){
+  const r=S.d.requests||{incoming:[],outgoing:[]},cs=S.cs;
+  const tabs=`<div class="sub3"><button class="${cs==='contacts'?'on':''}" data-act="cs" data-v="contacts">Contacts</button><button class="${cs==='requests'?'on':''}" data-act="cs" data-v="requests">Requests${r.incoming.length?` <i class="badge">${r.incoming.length}</i>`:''}</button><button class="${cs==='ana'?'on':''}" data-act="cs" data-v="ana">AnA</button></div>`;
+  let body='';
+  if(cs==='contacts'){const l=(S.d.contacts||[]).filter(c=>!S.q||c.name.toLowerCase().includes(S.q.toLowerCase()));
+    body=`<div style="padding:0 16px 8px"><input placeholder="Search contacts" data-bind="q" data-live="1" value="${esc(S.q)}"></div>`+(l.map(c=>`<div class="li">${av(c,46)}<div class="grow"><b class="ell" style="display:block">${esc(c.name)} ${c.role!=='user'?`<span class="tagb ${c.role==='corporate'?'o':'b'}">${c.role==='corporate'?'Business':'Institution'}</span>`:''}</b><span class="mut sm ell" style="display:block">${esc(c.bio||c.phone)}</span></div><button class="ib" data-act="msgto" data-id="${c.id}">💬</button></div>`).join('')||'<div class="empty">No contacts match.</div>')}
+  else if(cs==='requests'){
+    body=(r.incoming.length?'<div class="sec">Friend requests</div>'+r.incoming.map(x=>`<div class="li">${av(x.from,46)}<div class="grow"><b>${esc(x.from.name)}</b><div class="mut sm">${ago(x.ts)} ago</div></div><button class="btn sm" data-act="reqok" data-id="${x.id}">Accept</button><button class="btn sm alt" data-act="reqno" data-id="${x.id}">✕</button></div>`).join(''):'<div class="empty" style="padding:16px"><b>🤝</b>No new requests</div>')
+    +(r.outgoing.length?'<div class="sec">Sent</div>'+r.outgoing.map(x=>`<div class="li">${av(x.to,40)}<div class="grow"><b>${esc(x.to.name)}</b></div><span class="mut sm">Pending</span></div>`).join(''):'')
+    +`<div class="sec">Find people</div><div style="padding:0 16px 8px" class="row"><input placeholder="Search name or phone" data-bind="q" value="${esc(S.q)}"><button class="btn sm" data-act="findp">Search</button></div>`
+    +(S.d.people||[]).map(p=>`<div class="li">${av(p,42)}<div class="grow"><b>${esc(p.name)}</b><div class="mut sm">${esc(p.bio||'')}</div></div>${p.requested?'<span class="mut sm">Requested</span>':`<button class="btn sm" data-act="addp" data-id="${p.id}">Add</button>`}</div>`).join('')}
+  else body=anaView();
+  return `<div class="lh">Contacts</div>${tabs}${body}`;
+}
+function anaView(){
+  if(!feat('ana'))return offBanner('ana','AnA');
+  const sc=S.scope,feed=S.d.feed||[],m=S.me;
+  const head=`<div class="row" style="padding:0 16px 8px"><div class="grow"><b style="font-size:17px">Around & About</b><div class="mut sm">Catch up on life, reels & business</div></div><button class="ib" data-act="go" data-p="analytics" title="Analytics">📊</button><button class="ib" style="background:var(--brand);color:#fff" data-act="newpost">＋</button></div>
+  <div class="chips">${[['contacts','Contacts'],['business','Business'],['mine','My Tube']].map(x=>`<button class="chip ${sc===x[0]?'on':''}" data-act="scope" data-v="${x[0]}">${x[1]}</button>`).join('')}</div>`;
+  let tube='';
+  if(sc==='mine'){tube=m.tube?`<div class="tube"><div class="sm" style="opacity:.8">MY TUBE</div><h3 style="font-size:20px">${esc(m.tube.name)}</h3><div class="sm" style="margin:2px 0 8px">${esc(m.tube.desc||'')}</div><b>${m.friendCount}</b> <span class="sm">followers</span> · <b>${feed.length}</b> <span class="sm">posts</span></div>`
+    :`<div class="card" style="margin:0 16px 14px"><h3>📺 Start your own Tube</h3><p class="mut" style="margin:4px 0 10px">Your channel inside SemaChat: post longer videos and let your contacts follow your life.</p><input data-bind="gp.name" placeholder="Name your Tube" value="${esc(S.gp.name)}" style="margin-bottom:8px"><button class="btn full" data-act="mktube">Create my Tube</button></div>`}
+  return head+tube+(feed.length?feed.map(postCard).join(''):'<div class="empty"><b>🎬</b>Nothing here yet. Be the first to post!</div>');
+}
+function postCard(p){
+  const k={reel:['Reel','o'],tube:['Tube','b'],business:[p.author.role==='institution'?'Institution':'Business','b']}[p.kind];
+  return `<div class="post"><div class="hd">${av(p.author,40)}<div class="grow"><b>${esc(p.author.name)}</b><div class="mut sm">${ago(p.ts)} ago ${p.promoted?'• Promoted':''}</div></div><span class="tagb ${k[1]}">${k[0]}</span></div>
+  <div class="media" style="background:linear-gradient(145deg,${p.media.g.join(',')})" data-act="viewp" data-id="${p.id}">${esc(p.media.emoji)}<span class="pp">▶</span><span class="dur">${mmss(p.media.dur)}</span></div>
+  <div class="pa"><button class="${p.liked?'on':''}" data-act="like" data-id="${p.id}">${p.liked?'❤️':'🤍'} ${p.likeCount}</button><button data-act="comments" data-id="${p.id}">💬 ${p.commentCount}</button><button>👁 ${p.views}</button><span class="grow"></span><button data-act="report" data-id="${p.id}">⚑</button></div>
+  <div class="cap">${esc(p.caption)}</div></div>`;
+}
+function analyticsPage(){
+  const a=S.d.an;if(!a)return ph('Analytics');
+  return ph('AnA Analytics')+`<div class="kpis"><div class="kpi"><b>${a.views}</b><span>Total views</span></div><div class="kpi"><b>${a.likes}</b><span>Likes</span></div><div class="kpi"><b>${a.followers}</b><span>Followers</span></div><div class="kpi"><b>${a.posts}</b><span>Posts</span></div></div>
+  <div class="card" style="margin:12px 16px"><b>Views • last 7 days</b>${bars(a.series,{h:90,labels:['M','T','W','T','F','S','S']})}</div>
+  <div class="sec">Top posts</div>${a.top.map(postCard).join('')||'<div class="empty">Post something to see insights.</div>'}
+  ${S.me.role!=='user'?`<div class="card" style="margin:0 16px"><b>Business insights</b><p class="mut sm" style="margin:4px 0 8px">Go Pro for promoted placement and advanced analytics.</p><button class="btn sm" data-act="go" data-p="plans">View plans</button></div>`:''}`;
+}
+
+/* ---- explore ---- */
+function exploreView(){
+  if(!feat('explore'))return offBanner('explore','Explore');
+  const l=(S.d.explore||[]),tags=['All'].concat([...new Set(l.map(e=>e.tag))]);
+  const f=l.filter(e=>(S.exTag==='All'||e.tag===S.exTag)&&(!S.eq||(e.title+e.sub).toLowerCase().includes(S.eq.toLowerCase())));
+  return `<div class="lh">Explore</div><div class="sub3"><button class="${S.ex==='business'?'on':''}" data-act="ex" data-v="business">💼 Business</button><button class="${S.ex==='entertainment'?'on':''}" data-act="ex" data-v="entertainment">🎉 Entertainment</button></div>
+  <div style="padding:0 16px 8px"><input placeholder="Search ${S.ex}" data-bind="eq" data-live="1" value="${esc(S.eq||'')}"></div>
+  <div class="chips">${tags.map(t=>`<button class="chip ${S.exTag===t?'on':''}" data-act="extag" data-v="${esc(t)}">${esc(t)}</button>`).join('')}</div>
+  ${f.map(e=>`<div class="exc"><div class="em">${e.emoji}</div><div class="grow"><span class="tagb o">${esc(e.tag)}</span><b style="display:block;margin-top:3px">${esc(e.title)}</b><span class="mut sm">${esc(e.sub)}</span></div><button class="btn sm alt" data-act="saveex">Save</button></div>`).join('')||'<div class="empty">Nothing found.</div>'}`;
+}
+
+/* ---- me ---- */
+function meView(){
+  const m=S.me,T=(k,e,l,page,fk)=>`<button class="tile ${feat(fk)?'':'off'}" data-act="${feat(fk)?k:'off'}" ${page?`data-p="${page}"`:''}><span>${e}</span>${l}</button>`;
+  const role={user:'Personal',corporate:'Corporate',institution:'Institution'}[m.role];
+  return `<div class="lh">Me</div>
+  <div class="li" style="padding-top:0">${av(m,64)}<div class="grow"><b style="font-size:18px">${esc(m.name)}</b><div class="mut sm">${esc(m.phone)}</div><span class="tagb ${m.role==='user'?'':'o'}">${role} • ${({yellow:'Not verified',green:'Verified',gold:'Gold'})[m.tier||'yellow']}</span></div><button class="ib" data-act="editprofile">✎</button></div>
+  ${window.profileWidgets?profileWidgets():''}
+  <div class="wal"><div class="sm" style="opacity:.8">SemaChat Wallet</div><div class="bal">${feat('wallet')?money(m.balance):'—'}</div><div class="row"><button class="btn sm" style="background:#fff;color:var(--ink)" data-act="${feat('wallet')?'go':'off'}" data-p="wallet">Open wallet</button><button class="btn sm" style="background:#ffffff33" data-act="${feat('wallet')?'topup':'off'}">＋ Top up</button></div></div>
+  <div class="sec">Services</div><div class="tiles">${T('go','🏦','Financial Services','financial','financial')}${T('go','🛍️','Shopping','shop','shopping')}${T('go','📅','Life Planner','planner','planner')}</div>
+  <div class="sec">Travel & lifestyle partners</div><div class="tiles">${[['flights','✈️','Airlines'],['trains','🚆','Trains'],['buses','🚌','Long-distance Bus'],['taxis','🚕','Taxis'],['hotels','🏨','Hotels'],['restaurants','🍽️','Restaurants']].map(x=>`<button class="tile ${feat('travel')?'':'off'}" data-act="${feat('travel')?'travel':'off'}" data-c="${x[0]}"><span>${x[1]}</span>${x[2]}</button>`).join('')}</div>
+  ${m.role!=='user'?`<div class="sec">For ${role.toLowerCase()} accounts</div><div style="padding:0 16px"><div class="card row"><div class="grow"><b>${m.subscription?'Plan active':'Business plan required'}</b><div class="mut sm">${m.subscription?'Renews '+dt(m.subscription.until):'Post on AnA with a monthly plan'}</div></div><button class="btn sm" data-act="go" data-p="plans">${m.subscription?'Manage':'Choose plan'}</button></div></div>`:''}
+  ${meExtra()}<div class="sec">Account</div><div style="padding:0 16px" class="col"><div class="card"><b class="sm">Demo: switch account type</b><div class="row" style="margin-top:8px;flex-wrap:wrap">${['user','corporate','institution'].map(r=>`<button class="chip ${m.role===r?'on':''}" data-act="role" data-v="${r}">${{user:'Personal',corporate:'Corporate',institution:'Institution'}[r]}</button>`).join('')}</div><div class="mut sm" style="margin-top:6px">Backup email: ${esc(m.backupEmail)}</div></div><button class="btn alt full" data-act="signout">Sign out / change account</button></div>`;
+}
+function financialPage(){return ph('Financial Services')+(S.d.fin||[]).map(f=>`<div class="exc"><div class="em">${f.emoji}</div><div class="grow"><b>${esc(f.name)}</b><div class="mut sm">${esc(f.desc)}</div></div><button class="btn sm" data-act="finapply" data-id="${f.id}">${esc(f.cta)}</button></div>`).join('')}
+function shopPage(){const c=S.cart.length;return ph('Shopping',`<button class="ib" data-act="cart">🛒${c?`<i class="badge" style="position:absolute;margin:-22px -22px 0 0">${c}</i>`:''}</button>`)+`<div class="wg">${(S.d.shop||[]).map(p=>`<div class="card col" style="gap:4px;text-align:center"><div style="font-size:44px">${p.emoji}</div><b class="sm">${esc(p.name)}</b><span class="mut sm">${esc(p.seller)}</span><b>${money(p.price)}</b><button class="btn sm" data-act="addcart" data-id="${p.id}">Add to cart</button></div>`).join('')}</div>`}
+function travelPage(){
+  const cats=[['flights','✈️','Airlines'],['trains','🚆','Trains'],['buses','🚌','Buses'],['taxis','🚕','Taxis'],['hotels','🏨','Hotels'],['restaurants','🍽️','Dining']];
+  const ps=(S.d.services||[]).filter(p=>p.category===S.cat);
+  return ph('Travel & Lifestyle')+`<div class="chips">${cats.map(c=>`<button class="chip ${S.cat===c[0]?'on':''}" data-act="cat" data-v="${c[0]}">${c[1]} ${c[2]}</button>`).join('')}</div>
+  ${ps.map(p=>`<div class="sec">${esc(p.name)} <span class="tagb b" style="text-transform:none">${esc(p.tagline)}</span></div>`+p.items.map(i=>`<div class="exc"><div class="grow"><b>${esc(i.title)}</b><div class="mut sm">${esc(i.meta)}</div></div><div style="text-align:right"><b>${money(i.price)}</b><br><button class="btn sm" style="margin-top:4px" data-act="book" data-p="${p.id}" data-i="${i.id}">Book</button></div></div>`).join('')).join('')||'<div class="empty"><b>🧭</b>No partners available in this category right now.</div>'}
+  ${(S.d.bookings||[]).length?`<div class="sec">My bookings</div>`+S.d.bookings.map(b=>`<div class="li"><div class="fi" style="background:#e6f4ea">🎫</div><div class="grow"><b class="sm">${esc(b.title)}</b><div class="mut sm">Ref ${b.ref} • ${dt(b.ts)}</div></div><b class="sm">${money(b.price)}</b></div>`).join(''):''}`;
+}
+function plansPage(){
+  const d=S.d.plans;if(!d)return ph('Plans');
+  return ph('Business plans')+`<div class="pad"><div class="mut sm">Wallet balance: <b>${money(S.d.wallet.balance)}</b>. Plans are billed monthly by SemaChat from your wallet.</div></div><div class="col" style="padding:0 16px">${d.plans.map(p=>{const cur=d.current&&d.current.planId===p.id;return `<div class="plan ${cur?'cur':''}"><div class="row"><b class="grow" style="font-size:17px">${esc(p.name)}</b><b>${money(p.price)}<span class="mut sm">/mo</span></b></div><ul>${p.perks.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>${cur?`<span class="tagb">Active until ${dt(d.current.until)}</span>`:`<button class="btn full" data-act="subscribe" data-id="${p.id}">Subscribe</button>`}</div>`}).join('')||'<div class="empty">Plans are for corporate and institution accounts.<br>Switch account type in Me.</div>'}</div>`;
+}
+function plannerPage(){
+  const p=S.d.planner;if(!p)return ph('Life Planner');const t=S.pl;
+  const body=t==='today'?`<div class="row" style="padding:0 16px 10px"><input data-bind="pt.title" placeholder="Add a task…" value="${esc(S.pt.title)}"><button class="btn sm" data-act="addtask">Add</button></div>`+
+    (p.tasks.map(x=>`<div class="li"><span class="chk ${x.done?'on':''}" data-act="tasktg" data-id="${x.id}">${x.done?'✓':''}</span><div class="grow ${x.done?'done':''}"><b class="sm">${esc(x.title)}</b><div class="mut sm">${esc(x.when)} • ${esc(x.tag)}</div></div><button class="mut" data-act="taskdel" data-id="${x.id}">✕</button></div>`).join('')||'<div class="empty"><b>✨</b>All clear.</div>')
+    :t==='goals'?`<div class="row" style="padding:0 16px 10px"><input data-bind="pt.title" placeholder="New goal…" value="${esc(S.pt.title)}"><button class="btn sm" data-act="addgoal">Add</button></div>`+p.goals.map(g=>`<div class="exc"><div class="em">${g.emoji}</div><div class="grow"><b class="sm">${esc(g.title)}</b><div class="pb" style="margin:7px 0 3px"><i style="width:${g.progress}%"></i></div><span class="mut sm">${g.progress}% complete</span></div><button class="btn sm alt" data-act="goalup" data-id="${g.id}">+10%</button></div>`).join('')
+    :`<div class="row" style="padding:0 16px 10px"><input data-bind="pt.title" placeholder="New habit…" value="${esc(S.pt.title)}"><button class="btn sm" data-act="addhabit">Add</button></div>`+p.habits.map(h=>{const dn=h.last===new Date().toDateString();return `<div class="exc"><div class="em">${h.emoji}</div><div class="grow"><b class="sm">${esc(h.title)}</b><div class="mut sm">🔥 ${h.streak}-day streak</div></div><span class="chk ${dn?'on':''}" data-act="habitck" data-id="${h.id}">${dn?'✓':''}</span></div>`}).join('');
+  return ph('Life Planner')+`<div class="sub3"><button class="${t==='today'?'on':''}" data-act="pl" data-v="today">Tasks</button><button class="${t==='goals'?'on':''}" data-act="pl" data-v="goals">Goals</button><button class="${t==='habits'?'on':''}" data-act="pl" data-v="habits">Habits</button></div>${body}`;
+}
+
+/* ---- sheets ---- */
+function sheetView(){
+  const s=S.sheet,m=S.me;let b='';
+  const picker=(sel)=>(S.d.contacts||[]).map(c=>`<label class="li" style="padding:6px 0"><input type="checkbox" style="width:20px;height:20px" data-act="pick" data-id="${c.id}" ${S.pick.includes(c.id)?'checked':''}>${av(c,36)}<b class="grow">${esc(c.name)}</b></label>`).join('');
+  switch(s.n){
+    case 'attach':b=`<h3>Share</h3><div class="ag"><button data-act="att" data-k="photo"><span>📷</span>Photo</button><button data-act="att" data-k="video"><span>🎥</span>Video (2 min)</button><button data-act="att" data-k="file"><span>📎</span>File</button><button data-act="att" data-k="contact"><span>👤</span>Contact card</button><button data-act="att" data-k="loc"><span>📍</span>Location</button><button data-act="att" data-k="music"><span>🎵</span>Music</button></div>`;break;
+    case 'pickcontact':b=`<h3>Share a contact card</h3>${(S.d.contacts||[]).map(c=>`<div class="li" style="padding:6px 0" data-act="sendcontact" data-id="${c.id}">${av(c,38)}<div class="grow"><b>${esc(c.name)}</b><div class="mut sm">${esc(c.phone)}</div></div></div>`).join('')}`;break;
+    case 'music':b=`<h3>Share music</h3>${[['Jambo Bwana (Acoustic)','Kilele Band',214],['Sauti za Busara','Zuri Ensemble',187],['Nairobi Nights','DJ Baraka',241],['Kilimanjaro Calling','Amani & The Rift',203],['Mama Africa','Uhuru Voices',226]].map((t,i)=>`<div class="li" style="padding:6px 0" data-act="sendmusic" data-i="${i}"><div class="fi" style="background:var(--soft)">🎵</div><div class="grow"><b class="sm">${t[0]}</b><div class="mut sm">${t[1]} • ${mmss(t[2])}</div></div></div>`).join('')}`;break;
+    case 'newgroup':b=`<h3>New group chat</h3><input data-bind="gp.name" placeholder="Group name" value="${esc(S.gp.name)}" style="margin-bottom:10px">${picker()}<button class="btn full" style="margin-top:10px" data-act="mkgroup">Create group</button>`;break;
+    case 'conf':b=`<h3>Conference call</h3><p class="mut sm" style="margin-bottom:8px">Pick people to call together. A group is created so you can keep chatting afterwards.</p>${picker()}<div class="row" style="margin-top:10px"><button class="btn grow" data-act="doconf" data-m="voice">📞 Voice</button><button class="btn grow gr" data-act="doconf" data-m="video">🎥 Video</button></div>`;break;
+    case 'addparty':b=`<h3>Add to call</h3>${(S.d.contacts||[]).filter(c=>!S.call.parts.some(p=>p.id===c.id)).map(c=>`<div class="li" style="padding:6px 0" data-act="addtocall" data-id="${c.id}">${av(c,38)}<b class="grow">${esc(c.name)}</b><span class="btn sm">Add</span></div>`).join('')||'<div class="empty">Everyone is already in the call.</div>'}`;break;
+    case 'topup':b=`<h3>Top up wallet</h3><div class="row" style="flex-wrap:wrap;margin-bottom:10px">${[500,1000,2000,5000].map(a=>`<button class="chip" data-act="amt" data-v="${a}">${money(a)}</button>`).join('')}</div><input type="number" data-bind="w.amt" placeholder="Amount (KES)" value="${esc(S.w.amt)}" style="margin-bottom:8px"><select data-bind="w.method"><option>M-Pesa</option><option>Airtel Money</option><option>Bank card</option></select><button class="btn full" style="margin-top:12px" data-act="dotopup">Top up</button>`;break;
+    case 'send':b=`<h3>Send money</h3><select data-bind="w.to" style="margin-bottom:8px"><option value="">Choose a contact</option>${(S.d.contacts||[]).filter(c=>c.role==='user').map(c=>`<option value="${c.id}" ${S.w.to===c.id?'selected':''}>${esc(c.name)}</option>`).join('')}</select><input type="number" data-bind="w.amt" placeholder="Amount (KES)" value="${esc(S.w.amt)}"><button class="btn full" style="margin-top:12px" data-act="dosend">Send</button>`;break;
+    case 'book':{const p=(S.d.services||[]).find(x=>x.id===s.p),i=p.items.find(x=>x.id===s.i);b=`<h3>Confirm booking</h3><div class="card"><b>${esc(p.name)}</b><div>${esc(i.title)}</div><div class="mut sm">${esc(i.meta)}</div><h2 style="margin-top:8px">${money(i.price)}</h2></div><p class="mut sm" style="margin:8px 0">Paid from your wallet (${money(m.balance)}).</p><button class="btn full" data-act="dobook" data-p="${p.id}" data-i="${i.id}">Pay & book</button>`;break}
+    case 'ticket':b=`<h3>🎫 Booked!</h3><div class="card"><b>${esc(s.b.title)}</b><div class="mut sm">Reference</div><h2 style="letter-spacing:2px">${s.b.ref}</h2></div><button class="btn full" style="margin-top:12px" data-act="closesheet">Done</button>`;break;
+    case 'cart':{const items=S.cart.map(id=>(S.d.shop||[]).find(p=>p.id===id)).filter(Boolean),t=items.reduce((n,p)=>n+p.price,0);b=`<h3>Your cart</h3>${items.map(p=>`<div class="li" style="padding:6px 0"><span style="font-size:28px">${p.emoji}</span><b class="grow sm">${esc(p.name)}</b><b>${money(p.price)}</b></div>`).join('')||'<div class="empty">Cart is empty.</div>'}${items.length?`<h3 style="margin-top:8px">Total ${money(t)}</h3><button class="btn full" data-act="checkout">Pay with wallet</button>`:''}`;break}
+    case 'newpost':b=`<h3>New post</h3><div class="row" style="flex-wrap:wrap;margin-bottom:10px"><button class="chip ${S.np.kind==='reel'?'on':''}" data-act="npk" data-v="reel">🎬 Reel</button><button class="chip ${S.np.kind==='tube'?'on':''}" data-act="npk" data-v="tube">📺 Tube video</button>${m.role!=='user'?`<button class="chip ${S.np.kind==='business'?'on':''}" data-act="npk" data-v="business">🏢 Business post (paid plan)</button>`:''}</div>
+      <textarea rows="3" data-bind="np.caption" placeholder="What's happening in your world?">${esc(S.np.caption)}</textarea><div class="row" style="margin:10px 0;flex-wrap:wrap">${['🎬','🌅','☕','🏃🏾','🎶','🍲','📚','🌍'].map(e=>`<button class="chip ${S.np.emoji===e?'on':''}" data-act="npe" data-v="${e}">${e}</button>`).join('')}</div><p class="mut sm" style="margin-bottom:8px">Preview mode: media is represented by an emoji scene. Real camera upload plugs in here.</p><button class="btn full" data-act="dopost">Post</button>`;break;
+    case 'comments':b=`<h3>Comments</h3>${(s.list||[]).map(c=>`<div style="margin-bottom:8px"><b class="sm">${esc(c.name)}</b> <span class="mut sm">${ago(c.ts)}</span><div>${esc(c.text)}</div></div>`).join('')||'<div class="mut" style="margin-bottom:8px">Be the first to comment.</div>'}<div class="row"><input data-bind="cm.text" placeholder="Add a comment" value="${esc(S.cm.text)}"><button class="btn sm" data-act="docomment" data-id="${s.id}">Send</button></div>`;break;
+        case 'peek':{const p=s.d,n=p.notification,o=p.context.order,biz=n.mode==='business',canSw=p.actions.some(a=>a.id==='switch_mode');
+      b=`<h3>${biz?'Business':'Personal'} notification</h3><div class="card"><div class="row"><i class="dot ${biz?'b':'n'}"></i><b class="grow">${esc(n.title)}</b><span class="mut sm">${ago(n.ts)}</span></div><div style="margin-top:6px">${esc(n.body)}</div>${o?orderBlock(o):''}</div>
+      ${p.context.chatId?`<div class="row" style="margin:10px 0"><input data-bind="peekr" placeholder="Reply without switching mode…" value="${esc(S.peekr)}"><button class="btn sm" data-act="peekreply" data-id="${n.id}">Send</button></div>`:''}
+      <div class="row wrap" style="margin-top:8px">${o&&o.status==='new'?`<button class="btn gr sm" data-act="peekord" data-v="accept" data-id="${o.id}" data-n="${n.id}">Accept order</button><button class="btn red sm" data-act="peekord" data-v="reject" data-id="${o.id}" data-n="${n.id}">Reject</button>`:''}${canSw?`<button class="btn alt sm" data-act="peekswitch" data-id="${n.id}">Switch to ${biz?'Business':'Normal'}</button>`:''}<button class="btn alt sm" data-act="peekdismiss" data-id="${n.id}">Dismiss</button></div><p class="mut sm" style="margin-top:8px">Peeking does not change your mode.</p>`;break}
+    case 'peekbatch':{const p=s.d,anyNew=p.items.some(k=>k.order&&k.order.status==='new');
+      b=`<h3>${esc(p.summary)}</h3>`+p.items.map(k=>`<div class="card" style="margin-bottom:8px"><div class="row"><b class="grow sm">${esc(k.title)}</b><span class="mut sm">${ago(k.ts)}</span></div><div class="sm">${esc(k.body)}</div>${k.order?orderBlock(k.order):''}<div class="row wrap" style="margin-top:6px">${k.order&&k.order.status==='new'?`<button class="btn gr sm" data-act="peekord" data-v="accept" data-id="${k.order.id}" data-n="${k.id}" data-batch="${p.batchId}">Accept</button><button class="btn red sm" data-act="peekord" data-v="reject" data-id="${k.order.id}" data-n="${k.id}" data-batch="${p.batchId}">Reject</button>`:''}${k.ctx&&k.ctx.chatId?`<button class="btn alt sm" data-act="peekone" data-id="${k.id}">Reply</button>`:''}</div></div>`).join('')
+      +`<div class="row wrap" style="margin-top:6px">${anyNew?`<button class="btn gr sm" data-act="acceptall" data-batch="${p.batchId}">Accept all orders</button>`:''}<button class="btn alt sm" data-act="peekswitchb" data-batch="${p.batchId}">Switch to Business</button><button class="btn alt sm" data-act="closesheet">Close</button></div>`;break}
+    case 'invoice':b=`<h3>🧾 Invoice</h3><iframe sandbox srcdoc="${esc(s.inv.html)}" style="width:100%;height:420px;border:1px solid var(--line);background:#fff;border-radius:12px"></iframe><div class="row" style="margin-top:10px"><button class="btn grow" data-act="dlinvoice">⬇ Download</button><button class="btn alt grow" data-act="closesheet">Close</button></div>`;break;
+    case 'xfer':b=`<h3>Move money between modes</h3><p class="mut sm" style="margin-bottom:10px">Your wallet balance does not change. Two linked ledger entries record the move, so Business and Normal books stay clean.</p><div class="row" style="margin-bottom:10px"><button class="chip ${S.xf.from==='business'?'on':''}" data-act="xfrom" data-v="business">Owner draw → Personal</button><button class="chip ${S.xf.from==='normal'?'on':''}" data-act="xfrom" data-v="normal">Capital → Business</button></div><input type="number" data-bind="xf.amt" placeholder="Amount (KES)" value="${esc(S.xf.amt)}"><button class="btn full" style="margin-top:12px" data-act="doxfer">Move</button>`;break;
+    case 'payout':b=`<h3>Payout to bank</h3><p class="mut sm" style="margin-bottom:10px">Leave blank to sweep all revenue since the last payout. A ${S.d.wallet?S.d.wallet.fees.withdrawFeePct:1}% payout fee applies.</p><input type="number" data-bind="po.amt" placeholder="Amount (optional)" value="${esc(S.po.amt)}"><button class="btn full" style="margin-top:12px" data-act="dopayout">Request payout</button>`;break;
+    case 'deact':b=`<h3>Deactivate business?</h3><p style="margin-bottom:10px">All your Biz data will be archived: conversations, orders and catalog. Active ads pause and your plan is cancelled. You can reactivate within <b>12 months</b>.</p><div class="row"><button class="btn red grow" data-act="dodeact">Yes, deactivate</button><button class="btn alt grow" data-act="closesheet">Keep it</button></div>`;break;
+    case 'editprofile':b=`<h3>Edit profile</h3><label class="lb">Name</label><input data-bind="eb.name" value="${esc(S.eb.name!=null?S.eb.name:m.name)}" style="margin:4px 0 10px"><label class="lb">Bio</label><input data-bind="eb.bio" value="${esc(S.eb.bio!=null?S.eb.bio:m.bio)}"><button class="btn full" style="margin-top:12px" data-act="saveprofile">Save</button>`;break;
+  }
+  return `<div class="shade" data-act="closesheet"></div><div class="sheet"><div class="grip"></div>${b}</div>`;
+}
+
+/* ---- call overlay ---- */
+function partsHtml(){const c=S.call,now=Date.now();
+  const me=`<div class="pt ${c.mode==='video'&&c.cam?'vid':''}">${av(S.me,56)}<b class="sm">You</b><small>${c.muted?'🔇 muted':c.mode==='video'&&!c.cam?'camera off':'connected'}</small></div>`;
+  return me+c.parts.map(p=>{const live=now>=p.joinAt;return `<div class="pt ${live?'live':''} ${c.mode==='video'&&live?'vid':''}">${av(p,56)}<b class="sm">${esc(p.name.split(' ')[0])}</b><small>${live?(c.mode==='video'?'🎥 on camera':'🔊 connected'):'ringing…'}</small></div>`}).join('')}
+function callView(){const c=S.call;return `<div class="call"><h2>${esc(c.title)}</h2><div class="ct" id="ctimer">${mmss((Date.now()-c.t0)/1000)}</div><div class="cg" id="cgrid">${partsHtml()}</div>
+  <div class="cc"><button class="${c.muted?'on':''}" data-act="cmute">${c.muted?'🔇':'🎙️'}</button>${c.mode==='video'?`<button class="${c.cam?'':'on'}" data-act="ccam">${c.cam?'📹':'🚫'}</button>`:''}<button data-act="caddp">➕</button><button class="end" data-act="cend">📵</button></div></div>`}
+let callTimer=null;
+function startCall(mode){
+  const ch=S.d.chat.ch;if(!feat('calls'))return toast('Calls are switched off by SemaChat right now.');
+  if(mode==='video'&&!feat('videoCalls'))return toast('Video calls are switched off by SemaChat right now.');
+  if(ch.members.length>2&&!feat('conference'))return toast('Group calls are switched off by SemaChat right now.');
+  const t0=Date.now(),others=ch.members.filter(m=>m.id!==S.me.id);
+  S.call={chatId:ch.id,mode,t0,muted:false,cam:mode==='video',title:ch.type==='group'?ch.name:'Calling '+ch.name,parts:others.map((p,i)=>Object.assign({},p,{joinAt:t0+1300+i*900}))};
+  render();clearInterval(callTimer);callTimer=setInterval(()=>{const t=$('#ctimer');if(!t)return;t.textContent=mmss((Date.now()-S.call.t0)/1000);$('#cgrid').innerHTML=partsHtml()},1000);
+}
+async function endCall(){const c=S.call;clearInterval(callTimer);const dur=Math.floor((Date.now()-c.t0)/1000);S.call=null;
+  await guard(async()=>{await api('POST','/api/chats/'+c.chatId+'/call',{mode:c.mode,dur});const t=cur();if(t&&t.n==='chat'&&S.d.chat){S.d.chat.msgs=await api('GET','/api/chats/'+c.chatId+'/messages')}});render()}
+
+/* ---- tiny chart ---- */
+function bars(vals,o){o=o||{};const h=o.h||110,mx=Math.max.apply(null,vals.concat([1]));
+  return `<svg viewBox="0 0 ${vals.length*26} ${h+20}" class="chart" role="img">${vals.map((v,i)=>{const bh=Math.max(2,Math.round(v/mx*h));return `<rect x="${i*26+4}" y="${h-bh}" width="18" height="${bh}" rx="4" fill="${o.color||'#c2410c'}"><title>${o.labels?o.labels[i]+': ':''}${(o.fmt||(x=>x))(v)}</title></rect>${o.labels?`<text x="${i*26+13}" y="${h+14}" text-anchor="middle" font-size="9" fill="#7a7488">${o.labels[i]}</text>`:''}`}).join('')}</svg>`}
+
+/* =============================== actions =============================== */
+const acts={
+  reset(){if(confirm('Reset all demo data and sign out?')){['semachat_db_v1','semachat_tok','semachat_atok'].forEach(k=>store.del(k));location.reload()}},
+  retry(){S.blk=null;if(S.token&&!S.me){startSession().catch(e=>{if(e.status===401){S.token=null;store.del('semachat_tok')}else S.blk='SemaChat cannot be reached right now. You are still signed in.';render()})}else S.token?refresh():render()},
+  tab(d){setTab(d.t)}, back(){back()}, off(){toast('This feature is switched off by SemaChat right now.')},
+  go(d){go(d.p)}, closesheet(){S.sheet=null;render()},
+  // auth
+  async teamdemo(){try{const r=await api('POST','/api/auth/signin',{email:'amani@mail.com',code:'123ABC'});S.token=r.token;store.set('semachat_tok',r.token);await startSession()}catch(e){S.auth.err=e.message;render()}},
+  authmode(d){S.auth=Object.assign(S.auth,{mode:d.m,step:1,err:'',code:''});render()},
+  async otp(){const a=S.auth;a.err='';
+    try{if(!a.email.trim())throw new Error('Enter your email address.');if(a.mode==='up'&&!a.name.trim())throw new Error('Enter your full name.');
+      const r=await api('POST','/api/auth/otp',{email:a.email,purpose:a.mode==='up'?'signup':'signin'});a.hint=r.hint
+      a.step=2;a.code=''}catch(e){a.err=e.message}render()},
+  async authgo(){const a=S.auth;a.err='';
+    try{let r;if(a.mode==='up')r=await api('POST','/api/auth/signup',{name:a.name,phone:a.phone,email:a.email,code:a.code,role:a.role});
+      else r=await api('POST','/api/auth/signin',{email:a.email,code:a.code});
+      S.token=r.token;store.set('semachat_tok',r.token);await startSession()}catch(e){a.err=e.message;render()}},
+  signout(){try{api('POST','/api/auth/signout').catch(()=>{})}catch(e){}signOut()},
+  // chats
+  qf(d){S.cf=d.v;render()},
+  openchat(d){go('chat',{id:d.id})}, msgto(d){guard(async()=>{const c=await api('POST','/api/chats',{type:'direct',members:[d.id]});S.stack=[];S.tab='chats';await go('chat',{id:c.id})})},
+  sendtxt(){const i=$('#msgin'),t=i.value.trim();if(!t)return;i.value='';S.draft='';sendMsg('text',t)},
+  attach(){S.sheet={n:'attach'};render()},
+  att(d){const k=d.k;if(k==='photo'){S.sheet=null;render();$('#fPhoto').click()}else if(k==='video'){S.sheet=null;render();$('#fVideo').click()}else if(k==='file'){S.sheet=null;render();$('#fFile').click()}
+    else if(k==='contact'){guard(async()=>{S.d.contacts=await api('GET','/api/contacts');S.sheet={n:'pickcontact'};render()})}
+    else if(k==='music'){S.sheet={n:'music'};render()}
+    else if(k==='loc'){S.sheet=null;render();shareLoc()}},
+  async sendcontact(d){const c=S.d.contacts.find(x=>x.id===d.id);S.sheet=null;render();await sendMsg('contact','',{name:c.name,phone:c.phone})},
+  async sendmusic(d){const t=[['Jambo Bwana (Acoustic)','Kilele Band',214],['Sauti za Busara','Zuri Ensemble',187],['Nairobi Nights','DJ Baraka',241],['Kilimanjaro Calling','Amani & The Rift',203],['Mama Africa','Uhuru Voices',226]][+d.i];S.sheet=null;render();await sendMsg('music','',{title:t[0],artist:t[1],dur:t[2]})},
+  recstart(){S.rec=Date.now();$('#composer').innerHTML=composer();clearInterval(acts._rt);acts._rt=setInterval(()=>{const e=$('#rect');if(e)e.textContent=mmss((Date.now()-S.rec)/1000)},500)},
+  recx(){clearInterval(acts._rt);S.rec=null;$('#composer').innerHTML=composer()},
+  async recsend(){clearInterval(acts._rt);const dur=Math.max(1,Math.floor((Date.now()-S.rec)/1000));S.rec=null;$('#composer').innerHTML=composer();await sendMsg('voice','',{dur})},
+  playv(d,el){el.textContent='⏸';setTimeout(()=>{el.textContent='▶'},2500)}, playm(d,el){el.textContent='⏸';setTimeout(()=>{el.textContent='▶'},3000)},
+  savecontact(){toast('Contact saved to your address book')},
+  call(d){startCall(d.m)},
+  cmute(){S.call.muted=!S.call.muted;render()}, ccam(){S.call.cam=!S.call.cam;render()}, cend(){endCall()},
+  caddp(){guard(async()=>{S.d.contacts=await api('GET','/api/contacts');S.sheet={n:'addparty'};render()})},
+  addtocall(d){const c=S.d.contacts.find(x=>x.id===d.id);S.call.parts.push(Object.assign({},c,{joinAt:Date.now()+1200}));S.call.title='Conference • '+(S.call.parts.length+1)+' people';S.sheet=null;render()},
+  newgroup(){guard(async()=>{S.d.contacts=await api('GET','/api/contacts');S.pick=[];S.gp.name='';S.sheet={n:'newgroup'};render()})},
+  conf(){if(!feat('conference'))return toast('Conference calls are switched off by SemaChat right now.');guard(async()=>{S.d.contacts=await api('GET','/api/contacts');S.pick=[];S.sheet={n:'conf'};render()})},
+  pick(d,el){const i=S.pick.indexOf(d.id);if(el.checked&&i<0)S.pick.push(d.id);if(!el.checked&&i>=0)S.pick.splice(i,1)},
+  mkgroup(){guard(async()=>{const c=await api('POST','/api/chats',{type:'group',name:S.gp.name||'New group',members:S.pick});S.sheet=null;S.stack=[];S.tab='chats';await go('chat',{id:c.id})})},
+  doconf(d){guard(async()=>{const c=await api('POST','/api/chats',{type:'group',name:'Conference • '+new Date().toLocaleDateString([],{day:'numeric',month:'short'}),members:S.pick});S.sheet=null;S.stack=[];S.tab='chats';await go('chat',{id:c.id});startCall(d.m)})},
+  // contacts
+  cs(d){S.cs=d.v;S.q='';refresh()}, reqok(d){guard(async()=>{await api('POST','/api/requests/'+d.id,{accept:true});toast('You are now contacts 🎉');await load();render()})},
+  reqno(d){guard(async()=>{await api('POST','/api/requests/'+d.id,{accept:false});await load();render()})},
+  findp(){guard(async()=>{S.d.people=await api('GET','/api/people?q='+encodeURIComponent(S.q));if(!S.d.people.length)toast('No one found. Try at least 2 letters.');render()})},
+  addp(d){guard(async()=>{await api('POST','/api/requests',{to:d.id});toast('Friend request sent');S.d.people=await api('GET','/api/people?q='+encodeURIComponent(S.q));render()})},
+  // AnA
+  scope(d){S.scope=d.v;refresh()}, newpost(){S.np={kind:S.scope==='mine'&&S.me.tube?'tube':'reel',caption:'',emoji:'🎬'};S.sheet={n:'newpost'};render()},
+  npk(d){S.np.kind=d.v;render()}, npe(d){S.np.emoji=d.v;render()},
+  mktube(){guard(async()=>{await api('POST','/api/tube',{name:S.gp.name});S.gp.name='';toast('Your Tube is live 📺');await load();render()})},
+  dopost(){const G=[['#ed8936','#c53030'],['#4299e1','#553c9a'],['#38a169','#2c5282'],['#d69e2e','#975a16'],['#9f7aea','#b83280']];
+    guard(async()=>{try{await api('POST','/api/posts',{kind:S.np.kind,caption:S.np.caption,media:{emoji:S.np.emoji,g:G[Math.floor(Math.random()*G.length)],dur:15+Math.floor(Math.random()*45)}});S.sheet=null;S.scope=S.np.kind==='business'?'business':'mine';toast('Posted!');await load();render()}
+      catch(e){if(e.code==='plan_required'){S.sheet=null;toast(e.message);await go('plans')}else throw e}})},
+  like(d){guard(async()=>{await api('POST','/api/posts/'+d.id+'/like');S.d.feed=await api('GET','/api/feed?scope='+S.scope);render()})},
+  viewp(d){api('POST','/api/posts/'+d.id+'/view').then(()=>toast('▶ Playing preview…')).catch(()=>{})},
+  comments(d){guard(async()=>{S.cm.text='';S.sheet={n:'comments',id:d.id,list:await api('GET','/api/posts/'+d.id+'/comments')};render()})},
+  docomment(d){guard(async()=>{await api('POST','/api/posts/'+d.id+'/comment',{text:S.cm.text});S.cm.text='';S.sheet.list=await api('GET','/api/posts/'+d.id+'/comments');S.d.feed=await api('GET','/api/feed?scope='+S.scope);render()})},
+  report(d){guard(async()=>{await api('POST','/api/posts/'+d.id+'/report',{reason:'Reported by user'});toast('Thanks — our team will review this post.')})},
+  // explore
+  ex(d){S.ex=d.v;S.exTag='All';S.eq='';refresh()}, extag(d){S.exTag=d.v;render()}, saveex(){toast('Saved to your list')},
+  // me
+  topup(){S.w.amt='';S.sheet={n:'topup'};render()}, amt(d){S.w.amt=d.v;render()},
+  dotopup(){guard(async()=>{await api('POST','/api/wallet/topup',{amount:S.w.amt,method:S.w.method});S.sheet=null;toast('Wallet topped up ✅');await load();render()})},
+  sendmoney(){S.w.amt='';S.w.to='';S.sheet={n:'send'};render()},
+  dosend(){guard(async()=>{await api('POST','/api/wallet/send',{to:S.w.to,amount:S.w.amt});S.sheet=null;toast('Money sent ✅');await load();render()})},
+  travel(d){S.cat=d.c;go('travel')}, cat(d){S.cat=d.v;render()},
+  book(d){S.sheet={n:'book',p:d.p,i:d.i};render()},
+  dobook(d){guard(async()=>{const b=await api('POST','/api/services/book',{partnerId:d.p,itemId:d.i});await load();S.sheet={n:'ticket',b};render()})},
+  finapply(d){guard(async()=>{const r=await api('POST','/api/financial/apply',{id:d.id});toast(r.message)})},
+  addcart(d){S.cart.push(d.id);toast('Added to cart');render()}, cart(){S.sheet={n:'cart'};render()},
+  checkout(){guard(async()=>{const o=await api('POST','/api/shop/order',{items:S.cart});S.cart=[];S.sheet=null;toast('Order '+o.ref+' placed 🎉');await load();render()})},
+  subscribe(d){guard(async()=>{await api('POST','/api/plans/subscribe',{planId:d.id});toast('Plan activated — you are verified ✅');await load();render()})},
+  role(d){guard(async()=>{await api('PATCH','/api/me',{role:d.v});S.cart=[];await load();render()})},
+  editprofile(){S.eb={};S.sheet={n:'editprofile'};render()},
+  saveprofile(){guard(async()=>{await api('PATCH','/api/me',{name:S.eb.name,bio:S.eb.bio});S.sheet=null;await load();render()})},
+  // planner
+  openplanner(){go('planner')}, pl(d){S.pl=d.v;S.pt.title='';render()},
+  addtask(){guard(async()=>{await api('POST','/api/planner/tasks',{title:S.pt.title});S.pt.title='';await load();render()})},
+  tasktg(d){guard(async()=>{await api('POST','/api/planner/tasks/'+d.id+'/toggle');await load();render()})},
+  taskdel(d){guard(async()=>{await api('DELETE','/api/planner/tasks/'+d.id);await load();render()})},
+  addgoal(){guard(async()=>{await api('POST','/api/planner/goals',{title:S.pt.title});S.pt.title='';await load();render()})},
+  goalup(d){guard(async()=>{await api('POST','/api/planner/goals/'+d.id+'/progress',{delta:10});await load();render()})},
+  addhabit(){guard(async()=>{await api('POST','/api/planner/habits',{title:S.pt.title});S.pt.title='';await load();render()})},
+  habitck(d){guard(async()=>{await api('POST','/api/planner/habits/'+d.id+'/check');await load();render()})}
+};
+/* =============================== DUAL MODE: events, switching, peek =============================== */
+let srT=null;
+function softRefresh(){clearTimeout(srT);srT=setTimeout(()=>{if(adminMode()||S.sheet||S.call||S.rec||!S.me||!S.token)return;const t=cur();
+  if(t&&t.n!=='notifs')return;if(!t&&!['home','bhome','chats','orders'].includes(S.tab))return;guard(async()=>{await load();render()})},250)}
+function banner(n){const w=$('#phoneWrap');if(!w||adminMode()||!S.me)return;const el=document.createElement('div');el.className='ban'+(n.urgent?' urgent':'');
+  el.innerHTML=`<span style="font-size:22px">${NICON[n.type]||'🔔'}</span><div class="grow"><b class="sm">${esc(n.title)}</b><div class="sm ell">${esc(n.body)}</div></div><span class="chip" style="background:#fff3;color:#fff">Open</span>`;
+  el.onclick=()=>{el.remove();openNotifObj(n)};w.appendChild(el);setTimeout(()=>el.remove(),5500)}
+function onNotif(n){const t=cur(),d=n.delivery||{};softRefresh();
+  if(d.held||d.silent||adminMode())return;                              // quiet hours / silent: badge only
+  if(t&&t.n==='chat'&&n.ctx&&n.ctx.chatId===t.id)return;                // already looking at that chat
+  banner(n)}
+function onEvent(ev){
+  if(ev.type==='message'){const t=cur();
+    if(t&&t.n==='chat'&&S.d.chat&&t.id===ev.chatId){S.d.chat.msgs.push(ev.msg);paintMsgs();api('POST','/api/chats/'+ev.chatId+'/read').catch(()=>{})}
+    else softRefresh();
+  }else if(ev.type==='request'){toast('👋 '+ev.from.name+' sent you a friend request');if(S.me)S.me.requests++}
+  else if(ev.type==='announce'){toast('📢 '+ev.text)}
+  else if(ev.type==='notification'){onNotif(ev.n)}
+  else if(ev.type==='mode:changed'){if(S.me&&ev.deviceId!==DEVICE&&ev.mode!==S.me.activeMode){toast('Your mode was changed to '+(ev.mode==='business'?'Business':'Normal')+' (support or another device)');S.stack=[];S.sheet=null;S.tab=ev.mode==='business'?'bhome':'home';guard(async()=>{await load();render()})}}
+}
+async function afterSwitch(){S.stack=[];S.sheet=null;S.q='';S.me=await api('GET','/api/me');S.tab=S.me.activeMode==='business'?'bhome':'home';await load();render()}
+async function switchMode(m){
+  if(S.me.activeMode===m)return;
+  const r=await api('POST','/api/mode/switch',{mode:m,deviceId:DEVICE});
+  if(r.forced&&m==='business'){S.stack=[];S.tab='home';await load();render();return openReg()}
+  await afterSwitch();toast(r.activeMode==='business'?'🟢 Business mode':'🔵 Normal mode');
+}
+async function openReg(){S.reg.step=0;S.reg.edit=false;S.reg.more=false;await go('bizreg')}
+async function deepLink(n){
+  api('POST','/api/notifications/'+n.id+'/read').catch(()=>{});
+  const c=n.ctx||{};S.stack=[];S.sheet=null;
+  if(c.orderId&&isBiz()){S.tab='orders';await load();render();return}
+  if(c.chatId){S.tab='chats';await load();await go('chat',{id:c.chatId});return}
+  await load();render();
+}
+async function peek(id){const p=await api('GET','/api/notifications/'+id+'/peek');S.peekr='';S.sheet={n:'peek',d:p};render()}
+async function peekBatch(id){const p=await api('GET','/api/notifications/batch/'+id+'/peek');S.sheet={n:'peekbatch',d:p};render()}
+async function openNotifObj(n){
+  await guard(async()=>{
+    if(n.isBatch||n.type==='batch'){return peekBatch(n.batchId||n.id)}
+    const pf=(S.me&&S.me.prefs)||{autoSwitch:'critical_only'};
+    if(n.mode===S.me.activeMode)return deepLink(n);
+    const auto=pf.autoSwitch===true||(pf.autoSwitch==='critical_only'&&n.urgent);
+    if(auto){await api('POST','/api/notifications/'+n.id+'/switch',{auto:true,deviceId:DEVICE});toast('⚡ Switched to '+(n.mode==='business'?'Business':'Normal')+' mode');await afterSwitch();return deepLink(n)}
+    return peek(n.id);
+  });
+}
+async function patchPref(path,val){const body={},ks=path.split('.');let o=body;ks.forEach((k,i)=>{o[k]=i===ks.length-1?val:{};o=o[k]});S.pf=await api('PATCH','/api/me/preferences',body);S.me.prefs=S.pf;toast('Saved')}
+
+Object.assign(acts,{
+  msw(d){return guard(()=>switchMode(d.v))},
+  async bizcta(d){await guard(async()=>{
+    if(d.v==='reactivate'){await api('POST','/api/biz/reactivate');toast('♻️ Welcome back! Your business is live again.');await load();render()}
+    else if(d.v==='view_status'){await go('bizreg')}
+    else await openReg()})},
+  disc(d){return guard(async()=>{await api('POST','/api/mode/discovery/click',{entryPoint:d.t});await openReg()})},
+  // chats
+  cmode(){S.cmode=S.cmode==='all'?'auto':'all';return refresh()},
+  carch(){S.carch=!S.carch;return refresh()},
+  // wallet & business money
+  wm(d){S.wm=d.v;return refresh()},
+  xfer(){S.xf={from:isBiz()?'business':'normal',amt:''};S.sheet={n:'xfer'};render()},
+  xfrom(d){S.xf.from=d.v;render()},
+  doxfer(){return guard(async()=>{const r=await api('POST','/api/wallet/cross-transfer',{from:S.xf.from,amount:S.xf.amt});S.sheet=null;toast('⇄ Moved '+money(r.amount)+' ('+r.from+' → '+r.to+')');await load();render()})},
+  payout(){S.po.amt='';S.sheet={n:'payout'};render()},
+  dopayout(){return guard(async()=>{const r=await api('POST','/api/wallet/biz/payout',{amount:S.po.amt});S.sheet=null;toast('🏦 Payout of '+money(r.net)+' sent (fee '+money(r.fee)+')');await load();render()})},
+  exportcsv(){return guard(async()=>{const r=await api('GET','/api/wallet/biz/export');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([r.csv],{type:'text/csv'}));a.download=r.filename;a.click();toast('Ledger exported')})},
+  // orders & invoices
+  ordok(d){return guard(async()=>{await api('POST','/api/biz/orders/'+d.id+'/accept');toast('✅ Order accepted. Payment received.');await load();render()})},
+  ordno(d){return guard(async()=>{await api('POST','/api/biz/orders/'+d.id+'/reject');toast('Order rejected');await load();render()})},
+  invoice(d){return guard(async()=>{const inv=await api('GET','/api/biz/orders/'+d.id+'/invoice');S.sheet={n:'invoice',inv};render()})},
+  dlinvoice(){const inv=S.sheet.inv,a=document.createElement('a');a.href=URL.createObjectURL(new Blob([inv.html],{type:'text/html'}));a.download=inv.filename;a.click()},
+  // business settings
+  addteam(){return guard(async()=>{await api('POST','/api/biz/team',{userId:S.tm.id});S.tm.id='';toast('Teammate added to the shared inbox');await load();render()})},
+  rmteam(d){return guard(async()=>{await api('DELETE','/api/biz/team/'+d.id);await load();render()})},
+  inbox(d){return guard(async()=>{await api('PATCH','/api/biz/settings',{inboxAccess:d.v});await load();render()})},
+  sched(d){return guard(async()=>{await api('PATCH','/api/biz/settings',{payoutSchedule:d.v});await load();render()})},
+  bank(){return guard(async()=>{await api('PATCH','/api/biz/settings',{bankLinked:!S.bz.settings.bankLinked});await load();render()})},
+  deact(){S.sheet={n:'deact'};render()},
+  dodeact(){return guard(async()=>{await api('POST','/api/biz/deactivate',{confirm:true});toast('Business deactivated. You can reactivate within 12 months.');await afterSwitch()})},
+  sim(d){return guard(async()=>{const k=d.k,body={kind:k==='big'?'order':k==='bad'?'review':k,big:k==='big',rating:k==='bad'?1:5};const r=await api('POST','/api/dev/simulate',body);toast('🧪 '+r.customer+' • '+d.k.replace('_',' '));await load();render()})},
+  // notifications & peek
+  nf(d){S.nf=d.v;return refresh()},
+  markread(){return guard(async()=>{await api('POST','/api/notifications/read',{mode:S.nf==='all'?'all':S.me.activeMode});await load();render()})},
+  opennotif(d){const n=(S.notifs.items||[]).find(x=>x.id===d.id);if(n)return openNotifObj(n)},
+  peekreply(d){return guard(async()=>{await api('POST','/api/notifications/'+d.id+'/reply',{body:S.peekr});S.sheet=null;S.peekr='';toast('✉️ Reply sent. You are still in '+(isBiz()?'Business':'Normal')+' mode.');await load();render()})},
+  peekdismiss(d){return guard(async()=>{await api('POST','/api/notifications/'+d.id+'/dismiss');S.sheet=null;await load();render()})},
+  peekswitch(d){return guard(async()=>{const n=S.sheet.d.notification;await api('POST','/api/notifications/'+d.id+'/switch',{deviceId:DEVICE});await afterSwitch();await deepLink(n)})},
+  peekswitchb(d){return guard(async()=>{await api('POST','/api/mode/switch',{mode:'business',deviceId:DEVICE});await afterSwitch();toast('🟢 Business mode')})},
+  peekone(d){return guard(()=>peek(d.id))},
+  peekord(d){return guard(async()=>{await api('POST','/api/biz/orders/'+d.id+'/'+d.v);toast(d.v==='accept'?'✅ Order accepted':'Order rejected');
+    if(d.batch)await peekBatch(d.batch);else{S.sheet=null;await load();render()}})},
+  acceptall(d){return guard(async()=>{const items=S.sheet.d.items.filter(k=>k.order&&k.order.status==='new');for(const k of items)await api('POST','/api/biz/orders/'+k.order.id+'/accept');toast('✅ Accepted '+items.length+' order'+(items.length>1?'s':''));await peekBatch(d.batch)})},
+  // preferences
+  pfset(d,el){const v=el.checked;return guard(()=>patchPref(d.k,v))},
+  pfsel(d,el){let v=el.value;if(d.k==='autoSwitch')v=v==='true'?true:v==='false'?false:'critical_only';return guard(()=>patchPref(d.k,v))},
+  // registration
+  regstart(){S.reg.step=1;render()}, reglearn(){S.reg.more=!S.reg.more;render()}, regedit(){S.reg.edit=true;S.reg.step=1;const b=S.bz.status.business;if(b)Object.assign(S.reg,{name:b.name,category:b.category,kind:b.kind,taxPin:b.taxPin||''});render()},
+  regkind(d){S.reg.kind=d.v;render()}, concbook(){toast('📅 Opens the booking calendar for a 30-minute setup call (mock)')},
+  chkwait(){const r=S.reg;if(!r.category||!r.area){render();return}return guard(async()=>{r.wl=await api('GET','/api/biz/categories/'+encodeURIComponent(r.category)+'/waitlist-status?area='+r.area);render()})},
+  wlalt(d){const r=S.reg;
+    if(d.v==='informal'){r.kind='informal';toast('Listing informally: no verification needed')}
+    else if(d.v==='nearby_area'){r.area='parklands';toast('Switched to Parklands')}
+    else if(d.v==='alt_category'){r.category='wellness';toast('Switched to Health & wellness')}
+    else toast('✅ You are on the waitlist for '+r.category+' in '+r.area);
+    return acts.chkwait()},
+  async doreg(){const r=S.reg;r.err='';try{await api('POST','/api/biz/register',{name:r.name,category:r.category,kind:r.kind,taxPin:r.taxPin});r.edit=false;r.touched=false;await load();render();toast('📨 Submitted for verification')}catch(e){r.err=e.message;render()}}
+});
+
+function shareLoc(){const send=(a,b,l)=>sendMsg('location','',{lat:a,lng:b,label:l});
+  if(navigator.geolocation)navigator.geolocation.getCurrentPosition(p=>send(+p.coords.latitude.toFixed(5),+p.coords.longitude.toFixed(5),'My pinned location'),()=>send(0.0167,37.074,'Pinned: Nanyuki (sample location)'),{timeout:4000});else send(0.0167,37.074,'Pinned: Nanyuki (sample location)')}
+async function startSession(){S.me=await api('GET','/api/me');connectEvents();S.tab=S.me.activeMode==='business'?'bhome':'home';S.stack=[];S.blk=null;await load();render()}
+function signOut(silent){S.token=null;S.me=null;store.del('semachat_tok');if(es){es.close();es=null}S.stack=[];S.d={};S.auth.step=1;S.auth.err=silent?'Please sign in again.':'';render()}
+
+/* file inputs */
+$('#fPhoto').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const t=await new Promise(res=>{const img=new Image(),u=URL.createObjectURL(f);img.onload=()=>{const c=document.createElement('canvas'),sc=Math.min(1,260/img.width);c.width=img.width*sc;c.height=img.height*sc;c.getContext('2d').drawImage(img,0,0,c.width,c.height);res({thumb:c.toDataURL('image/jpeg',.6)})};img.onerror=()=>res({thumb:null});img.src=u});await sendMsg('photo','',{name:f.name,thumb:t.thumb,emoji:'🖼️'})});
+$('#fVideo').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const v=document.createElement('video'),u=URL.createObjectURL(f);v.preload='metadata';
+  v.onloadedmetadata=async()=>{const dur=Math.round(v.duration||0);if(dur>120)return toast('Videos are limited to 2 minutes (yours is '+mmss(dur)+').');const m=await sendMsg('video','',{name:f.name,dur});if(m)S.blob[m.id]=u;paintMsgs()};v.onerror=()=>toast('Could not read that video.');v.src=u});
+$('#fFile').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const sz=f.size>1048576?(f.size/1048576).toFixed(1)+' MB':Math.max(1,Math.round(f.size/1024))+' KB';await sendMsg('file','',{name:f.name,size:sz})});
+
+/* =============================== events (delegated) =============================== */
+document.addEventListener('click',e=>{const el=e.target.closest('[data-act]');if(!el)return;const a=el.dataset.act;if(el.tagName==='INPUT'&&el.type==='checkbox'&&!['pick'].includes(a)&&!a.startsWith('a_'))return;
+  const fn=a.startsWith('a_')?adm[a.slice(2)]:acts[a];if(!fn)return;
+  if(el.tagName==='INPUT'&&el.type==='checkbox')return; // handled via change
+  Promise.resolve(fn(el.dataset,el)).catch(err=>toast(err.message))});
+document.addEventListener('change',e=>{const el=e.target;if(el.tagName==='INPUT'&&el.type==='checkbox'&&el.dataset.act){const a=el.dataset.act;const fn=a.startsWith('a_')?adm[a.slice(2)]:acts[a];if(fn)Promise.resolve(fn(el.dataset,el)).catch(err=>toast(err.message))}});
+document.addEventListener('input',e=>{const el=e.target,b=el.dataset&&el.dataset.bind;if(!b)return;if(/\.code$/.test(b)){const up=el.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,32);if(up!==el.value)el.value=up}setPath(b,el.value);if(el.dataset.live){const pos=el.selectionStart;render();const n=document.querySelector('[data-bind="'+b+'"]');if(n){n.focus();try{n.setSelectionRange(pos,pos)}catch(_){}}}});
+document.addEventListener('change',e=>{const el=e.target,b=el.dataset&&el.dataset.bind;if(el.dataset&&el.dataset.onchg&&acts[el.dataset.onchg]){if(b)setPath(b,el.value);Promise.resolve(acts[el.dataset.onchg](el.dataset,el)).catch(err=>toast(err.message));return}if(b&&el.tagName==='SELECT'){setPath(b,el.value)}});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'){if(e.target.id==='msgin')acts.sendtxt();}});
+
+/*@ADMIN-BEGIN*/
+/* =============================== developer console =============================== */
+const adm={
+  async otp(){guard0(async()=>{S.adm.err='';const r=await api('POST','/api/admin/otp',{email:S.adm.email},true);S.adm.hint=r.hint||'We emailed you a code.';S.adm.step=2;S.adm.code='';render()},e=>{S.adm.err=e.message;render()})},
+  async teamdemo(){guard0(async()=>{const r=await api('POST','/api/admin/signin',{email:'admin@semachat.app',code:'123ABC'},true);S.atok=r.token;store.set('semachat_atok',r.token);S.adm.step=1;await adminBoot()},e=>{S.adm.err=e.message;render()})},
+  async otpback(){S.adm.step=1;S.adm.code='';S.adm.err='';S.adm.hint='';render()},
+  async signin(){guard0(async()=>{const r=await api('POST','/api/admin/signin',{email:S.adm.email,code:S.adm.code},true);S.atok=r.token;store.set('semachat_atok',r.token);S.adm.err='';S.adm.step=1;S.adm.code='';await adminBoot()},e=>{S.adm.err=e.message;render()})},
+  async signout(){S.atok=null;store.del('semachat_atok');render()},
+  async sec(d){S.adm.section=d.s;await adminBoot()},
+  async flag(d,el){await api('POST','/api/admin/settings',{feature:{key:d.k,on:el.checked}},true);await adminBoot()},
+  async maint(d,el){await api('POST','/api/admin/settings',{maintenance:el.checked},true);await adminBoot()},
+  async signups(d,el){await api('POST','/api/admin/settings',{signupsOpen:el.checked},true);await adminBoot()},
+  async fees(){await api('POST','/api/admin/settings',{fees:{p2pTransferPct:S.f.p2p,withdrawFeePct:S.f.wd,shopCommissionPct:S.f.shop}},true);toast('Fees updated');await adminBoot()},
+  async bcast(){await api('POST','/api/admin/broadcast',{text:S.bc},true);toast(S.bc?'Broadcast sent to all users':'Broadcast cleared');S.bc='';await adminBoot()},
+  async bclear(){await api('POST','/api/admin/broadcast',{text:''},true);await adminBoot()},
+  async ustatus(d){await api('POST','/api/admin/users/'+d.id,{status:d.v},true);await adminBoot()},
+  async uverify(d){await api('POST','/api/admin/users/'+d.id,{verified:d.v==='1'},true);await adminBoot()},
+  async uq(){await adminBoot()},
+  async planprice(d){await api('POST','/api/admin/plans/'+d.id,{price:S.f['p_'+d.id]},true);toast('Plan price updated');await adminBoot()},
+  async mod(d){await api('POST','/api/admin/moderation/'+d.id,{action:d.v},true);toast(d.v==='remove'?'Post removed':'Report dismissed');await adminBoot()},
+  async ptoggle(d,el){await api('POST','/api/admin/partners/'+d.id,{enabled:el.checked},true);await adminBoot()},
+  async pcomm(d){await api('POST','/api/admin/partners/'+d.id,{commission:S.f['c_'+d.id]},true);toast('Commission updated');await adminBoot()}
+};
+/* ---- developer console: businesses, mode analytics, force mode ---- */
+function aBiz(){const l=S.a.biz||[];
+  return `<h2>Businesses</h2><p class="lead">Verify registrations, suspend or reinstate accounts.</p><div class="pn"><table class="tbl"><tr><th>Business</th><th>Owner</th><th>Type</th><th>Status</th><th>Team</th><th>Actions</th></tr>${l.map(b=>`<tr><td><b>${esc(b.name)}</b><div class="mut sm">${esc(b.category)}${b.taxPin?' • PIN '+esc(b.taxPin):''}</div></td><td><div class="row">${av({name:b.owner,color:b.color},30)}<div>${esc(b.owner)}<div class="mut sm">${esc(b.phone)}</div></div></div></td><td>${b.kind}</td><td><span class="tagb ${b.status==='active'?'':'o'}">${b.status}</span>${b.rejectReason?`<div class="mut sm">${esc(b.rejectReason)}</div>`:''}</td><td>${b.team}</td><td>${
+    (b.status==='pending'||b.status==='rejected')?`<button class="btn sm gr" data-act="a_bizact" data-id="${b.userId}" data-v="approve">Approve</button> <button class="btn sm alt" data-act="a_bizact" data-id="${b.userId}" data-v="reject">Reject</button>`
+    :b.status==='active'?`<button class="btn sm alt" data-act="a_bizact" data-id="${b.userId}" data-v="suspend">Suspend</button>`
+    :b.status==='suspended'?`<button class="btn sm gr" data-act="a_bizact" data-id="${b.userId}" data-v="reinstate">Reinstate</button>`:'<span class="mut sm">archived</span>'}</td></tr>`).join('')||'<tr><td colspan="6" class="mut">No business registrations yet.</td></tr>'}</table></div>`}
+function aModes(){const d=S.a.modes,w=S.a.weekly;if(!d)return '';const m=d.metrics;
+  return `<h2>Mode analytics</h2><p class="lead">How people use Normal and Business modes (last 30 days).</p>
+  <div class="gridk">${gk('Business accounts',m.adoption.bizAccounts,m.adoption.bizPct+'% of users')}${gk('Tapped Business',m.adoption.tappedBusinessPct+'%','of all users')}${gk('Registration approved',m.adoption.registrationConversionPct+'%',m.adoption.registrationsSubmitted+' submitted')}${gk('Switches / user / day',m.engagement.switchesPerUserPerDay,'target 3–5')}${gk('Biz hours / day',m.engagement.avgBizHoursPerDayPerBizUser,'per business user')}${gk('Gate blocks',m.gate.blocks,'should stay low')}</div>
+  <div class="two"><div class="pn"><h3>Peek outcomes (${m.peek.opened} opened)</h3>${[['Replied inline',m.peek.replyPct,'#16a34a'],['Switched mode',m.peek.switchPct,'#2b6cb0'],['Dismissed',m.peek.dismissPct,'#b7791f']].map(r=>`<div class="row"><span class="grow sm">${r[0]}</span><b>${r[1]}%</b></div><div class="bar3"><i style="width:${r[1]}%;background:${r[2]}"></i></div>`).join('')}<div class="mut sm">Auto-switches triggered: ${m.peek.autoSwitchTriggered}</div></div>
+  <div class="pn"><h3>Notifications</h3>${[['Delivered',m.notifications.delivered],['Delivered silently',m.notifications.silent],['Batched',m.notifications.batched],['Critical',m.notifications.critical]].map(r=>`<div class="row" style="margin-bottom:6px"><span class="grow">${r[0]}</span><b>${r[1]}</b></div>`).join('')}</div></div>
+  <div class="two"><div class="pn"><h3>Discovery CTA clicks (${m.discovery.clicks})</h3>${m.discovery.byEntryPoint.map(r=>`<div class="row" style="margin-bottom:6px"><span class="grow">${esc(r.key)}</span><b>${r.count}</b></div>`).join('')||'<span class="mut">No clicks yet.</span>'}<h3 style="margin-top:12px">Most gate-blocked endpoints</h3>${m.gate.topEndpoints.map(r=>`<div class="row" style="margin-bottom:6px"><span class="grow sm">${esc(r.key)}</span><b>${r.count}</b></div>`).join('')||'<span class="mut">None blocked.</span>'}</div>
+  <div class="pn"><h3>Identity & wallet</h3><div class="row" style="margin-bottom:6px"><span class="grow">Customer phone reveal rate</span><b>${m.identity.revealPct}%</b></div><div class="row" style="margin-bottom:6px"><span class="grow">Business customer chats</span><b>${m.identity.customerChats}</b></div><div class="row"><span class="grow">Cross-mode transfers</span><b>${m.wallet.crossModeTransfers}</b></div></div></div>
+  ${w?`<div class="pn"><h3>Weekly report</h3><ul style="margin-left:18px;line-height:1.7">${w.highlights.map(h=>`<li>${esc(h)}</li>`).join('')}</ul></div>`:''}`}
+Object.assign(adm,{
+  async bizact(d){let reason;if(d.v==='reject'){reason=prompt('Reason shown to the owner:','Details could not be verified.');if(reason===null)return}
+    await api('POST','/api/admin/biz/'+d.id,{action:d.v,reason},true);toast('Business '+d.v+'d');await adminBoot()},
+  async autoapp(d,el){await api('POST','/api/admin/settings',{autoApproveBiz:el.checked},true);await adminBoot()},
+  async forcemode(d){const m=prompt('Force which mode? (normal / business)','normal');if(!m)return;const reason=prompt('Reason for the audit log (required):','Support request');if(!reason)return;
+    try{await api('POST','/api/admin/users/'+d.id+'/mode',{mode:m.trim().toLowerCase(),reason},true);toast('Mode forced')}catch(e){toast(e.message)}await adminBoot()}
+});
+
+async function guard0(fn,onerr){try{await fn()}catch(e){onerr?onerr(e):toast(e.message)}}
+async function adminBoot(){
+  if(!S.atok){render();return}
+  try{const s=S.adm.section,A=S.a;
+    A.stats=await api('GET','/api/admin/stats',null,true);
+    if(s==='users')A.users=await api('GET','/api/admin/users?q='+encodeURIComponent(S.uqs||''),null,true);
+    if(s==='revenue')A.rev=await api('GET','/api/admin/revenue',null,true);
+    if(s==='moderation')A.mod=await api('GET','/api/admin/moderation',null,true);
+    if(s==='partners')A.partners=await api('GET','/api/admin/partners',null,true);
+    if(s==='people')A.people=await api('GET','/api/admin/people?gender='+(S.apf.g||'')+'&age='+(S.apf.a||'')+'&tier='+(S.apf.t||'')+'&q='+encodeURIComponent(S.apf.q||''),null,true);if(s==='safety')A.safety=await api('GET','/api/admin/safety',null,true);if(s==='aml')A.aml=await api('GET','/api/admin/aml',null,true);if(s==='lending')A.lending=await api('GET','/api/admin/lending',null,true);if(s==='ads')A.ads=await api('GET','/api/admin/ads',null,true);if(s==='disputes')A.disputes=await api('GET','/api/admin/disputes',null,true);if(s==='biz')A.biz=await api('GET','/api/admin/biz',null,true);if(s==='modes'){A.modes=await api('GET','/api/admin/mode-analytics',null,true);A.weekly=await api('GET','/api/admin/weekly-report',null,true)}if(s==='audit')A.audit=await api('GET','/api/admin/audit',null,true);
+    if(window.adminLoadExt)await adminLoadExt(s,A);
+    const st=A.stats.settings;if(S.f.p2p==null){S.f.p2p=st.fees.p2pTransferPct;S.f.wd=st.fees.withdrawFeePct;S.f.shop=st.fees.shopCommissionPct}
+    render();
+  }catch(e){if(e.status===401){S.atok=null;store.del('semachat_atok')}toast(e.message);render()}
+}
+function renderAdmin(){
+  const el=$('#admin');
+  if(!S.atok){const A=S.adm;el.style.display='block';el.innerHTML=`<div style="max-width:380px;margin:80px auto;padding:20px"><div class="card col"><h2>🛠️ SemaChat Developer Console</h2><p class="mut">Sign in with your developer email. We email you a 6-character code (valid 5 minutes).</p><label class="lb">Developer email</label><input type="email" data-bind="adm.email" value="${esc(A.email)}" ${A.step===2?'disabled':''} placeholder="you@company.com">${A.step===2?`<label class="lb">Code from your email</label><input data-bind="adm.code" value="${esc(A.code)}" maxlength="32" autocomplete="one-time-code" autocapitalize="characters" spellcheck="false" placeholder="ABC123" style="text-transform:uppercase;letter-spacing:6px;font-weight:800;font-size:20px;text-align:center"><div class="hint">${esc(A.hint)}</div>`:''}${A.err?`<div class="err">${esc(A.err)}</div>`:''}${A.step===1?`<button class="btn" data-act="a_otp">Email me a code</button>`:`<button class="btn" data-act="a_signin">Verify &amp; sign in</button><button class="btn alt" data-act="a_otpback">Change email</button>`}${window.SC_PREVIEW?'<button class="btn alt" data-act="a_teamdemo">⚡ Development team: enter without signing in</button>':''}<div class="hint">Stay signed in until you press Sign out. Demo: admin@semachat.app, code 123ABC.</div></div></div>`;return}
+  el.style.display='';
+  const A=S.a,st=A.stats;if(!st){el.innerHTML='<div class="main">Loading…</div>';return}
+  const sec=S.adm.section;
+  const items=[['overview','📊','Overview'],['users','👥','Users'],['revenue','💰','Revenue & fees'],['moderation','🛡️','Moderation'],['controls','🎛️','App controls'],['partners','🔗','Partners'],['biz','🏪','Businesses'],['people','🧭','People'],['safety','🛡️','Safety & minors'],['aml','💸','Money alerts'],['lending','🏦','Bank & loans'],['ads','📣','Ad review'],['donations','🤲','Donations'],['otm','📍','On the move!'],['dira','🧩','DIRA TECH apps'],['music','🎵','DIRA Music'],['guard','🚧','Content guard'],['access','🔐','Access audit'],['providers','🔌','Providers & health'],['disputes','⚖️','Disputes'],['modes','🔀','Mode analytics'],['audit','📜','Audit log']];
+  const side=`<div class="side"><h3>🌍 SemaChat Ops</h3>${items.map(i=>`<button class="${sec===i[0]?'on':''}" data-act="a_sec" data-s="${i[0]}"><span>${i[1]}</span>${i[2]}${i[0]==='moderation'&&st.content.openReports?`<i class="badge">${st.content.openReports}</i>`:''}</button>`).join('')}<button data-act="a_signout" style="margin-top:12px">↩ Sign out / change account</button></div>`;
+  el.innerHTML=side+`<div class="main">${({overview:aOverview,users:aUsers,biz:aBiz,people:aPeople,donations:aDonations,otm:aOtm,dira:aDira,music:aMusicAdm,guard:aGuard,access:aAccess,providers:aProviders,safety:aSafety,aml:aAml,lending:aLending,ads:aAds,disputes:aDisputes,modes:aModes,revenue:aRevenue,moderation:aModeration,controls:aControls,partners:aPartners,audit:aAudit})[sec](st)}</div>`;
+}
+const gk=(l,v,s)=>`<div class="gk"><span>${l}</span><b>${v}</b><span>${s||''}</span></div>`;
+const lbls14=()=>Array.from({length:14},(_,i)=>{const d=new Date(Date.now()-(13-i)*864e5);return d.getDate()});
+function aOverview(st){const s=st.settings;return `<h2>Overview</h2><p class="lead">Live snapshot of SemaChat. ${s.maintenance?'<b style="color:var(--red)">● App is in maintenance mode</b>':'<b style="color:var(--green)">● App is live</b>'}</p>
+  <div class="gridk">${gk('Total users',st.users.total,st.users.new30+' new in 30 days')}${gk('Active accounts',st.users.active,st.users.suspended+' suspended')}${gk('Messages sent',st.content.messages.toLocaleString(),st.content.chats+' chats')}${gk('AnA posts',st.content.posts,st.content.openReports+' open reports')}${gk('Monthly recurring',money(st.revenue.mrr),'from business plans')}${gk('Wallet float',money(st.walletFloat),'held for users')}</div>
+  <div class="two"><div class="pn"><h3>Daily active users (sample series)</h3>${bars(st.dau,{labels:lbls14(),color:'#6b46c1'})}</div><div class="pn"><h3>New sign-ups (sample series)</h3>${bars(st.signups,{labels:lbls14(),color:'#2f855a'})}</div></div>
+  <div class="two"><div class="pn"><h3>Revenue by stream</h3>${[['Subscriptions (corporate & institutions)',st.revenue.subscriptions,'#c2410c'],['Booking & shop commissions',st.revenue.commissions,'#2b6cb0'],['Transfer & withdrawal fees',st.revenue.fees,'#b7791f']].map(r=>`<div style="margin-bottom:10px"><div class="row"><span class="sm grow">${r[0]}</span><b>${money(r[1])}</b></div><div class="pb"><i style="width:${st.revenue.total?Math.round(r[1]/st.revenue.total*100):0}%;background:${r[2]}"></i></div></div>`).join('')}</div>
+  <div class="pn"><h3>Account mix</h3>${[['Personal',st.users.byRole.user],['Corporate',st.users.byRole.corporate],['Institution',st.users.byRole.institution]].map(r=>`<div class="row" style="margin-bottom:8px"><span class="grow">${r[0]}</span><b>${r[1]}</b></div>`).join('')}<div class="hint" style="margin-top:8px">Tip: use <b>App controls</b> to switch features on/off or broadcast a message to everyone.</div></div></div>`}
+function aUsers(){const l=S.a.users||[];return `<h2>Users</h2><p class="lead">Verify, suspend and support accounts.</p><div class="pn"><div class="row" style="margin-bottom:10px"><input placeholder="Search by name or phone" data-bind="uqs" value="${esc(S.uqs||'')}" style="max-width:320px"><button class="btn sm" data-act="a_uq">Search</button></div>
+  <table class="tbl"><tr><th>User</th><th>Type</th><th>Status</th><th>Wallet</th><th>Msgs</th><th>Posts</th><th>Actions</th></tr>${l.map(u=>`<tr><td><div class="row">${av(u,34)}<div><b>${esc(u.name)}</b><div class="mut sm">${esc(u.phone)}</div></div></div></td><td>${u.role}</td><td><span class="tagb ${u.status==='active'?'':'o'}">${u.status}</span> ${u.verified?'<span class="tagb b">verified</span>':''}</td><td>${money(u.balance)}</td><td>${u.messages}</td><td>${u.posts}</td><td><button class="btn sm alt" data-act="a_ustatus" data-id="${u.id}" data-v="${u.status==='active'?'suspended':'active'}">${u.status==='active'?'Suspend':'Reactivate'}</button> <button class="btn sm alt" data-act="a_forcemode" data-id="${u.id}">Force mode</button> <button class="btn sm alt" data-act="a_uverify" data-id="${u.id}" data-v="${u.verified?'0':'1'}">${u.verified?'Unverify':'Verify'}</button></td></tr>`).join('')}</table></div>`}
+function aRevenue(st){const r=S.a.rev;if(!r)return '';return `<h2>Revenue & fees</h2><p class="lead">What corporates, institutions and partners pay SemaChat.</p>
+  <div class="gridk">${gk('Total revenue',money(st.revenue.total))}${gk('Subscriptions',money(st.revenue.subscriptions))}${gk('Commissions',money(st.revenue.commissions))}${gk('Fees',money(st.revenue.fees))}</div>
+  <div class="two"><div class="pn"><h3>Revenue per month</h3>${bars(r.months.map(m=>m.total),{labels:r.months.map(m=>m.label),fmt:money})}</div>
+  <div class="pn"><h3>Business plan pricing (KES / month)</h3>${r.plans.map(p=>`<div class="row" style="margin-bottom:8px"><div class="grow"><b class="sm">${esc(p.name)}</b><div class="mut sm">${p.for}</div></div><input class="ns" type="number" data-bind="f.p_${p.id}" value="${S.f['p_'+p.id]!=null?S.f['p_'+p.id]:p.price}"><button class="btn sm" data-act="a_planprice" data-id="${p.id}">Save</button></div>`).join('')}</div></div>
+  <div class="pn"><h3>Subscriptions</h3><table class="tbl"><tr><th>Account</th><th>Plan</th><th>Price</th><th>Since</th><th>Status</th></tr>${r.subscriptions.map(s=>`<tr><td>${esc(s.user)}</td><td>${esc(s.plan)}</td><td>${money(s.price)}</td><td>${dt(s.since)}</td><td><span class="tagb ${s.active?'':'o'}">${s.active?'active':'expired'}</span></td></tr>`).join('')}</table></div>
+  <div class="pn"><h3>Recent ledger</h3><table class="tbl">${r.recent.map(x=>`<tr><td>${dt(x.ts)}</td><td><span class="tagb b">${x.type}</span></td><td>${esc(x.desc)}</td><td style="text-align:right"><b>${money(x.amount)}</b></td></tr>`).join('')}</table></div>`}
+function aModeration(){const l=S.a.mod||[];return `<h2>Content moderation</h2><p class="lead">Reports from users on AnA posts.</p>${l.map(r=>`<div class="pn"><div class="row"><div class="grow"><b>${esc(r.reason)}</b><div class="mut sm">Reported by ${esc(r.reporter)} • ${ago(r.ts)} ago</div></div><button class="btn sm red" data-act="a_mod" data-id="${r.id}" data-v="remove">Remove post</button><button class="btn sm alt" data-act="a_mod" data-id="${r.id}" data-v="dismiss">Dismiss</button></div>${r.post?`<div style="margin-top:10px;padding:10px;background:#faf6ee;border-radius:12px"><b class="sm">${esc(r.post.author.name)}</b> <span class="mut sm">(${r.post.kind})</span><div>${esc(r.post.caption)}</div></div>`:''}</div>`).join('')||'<div class="pn empty"><b>✅</b>No open reports.</div>'}`}
+function aControls(st){const s=st.settings,names={chats:'Chats & messaging',calls:'Voice calls',videoCalls:'Video calls',conference:'Group & conference calls',ana:'AnA (reels & Tube)',explore:'Explore',wallet:'Wallet',financial:'Financial services',shopping:'Shopping',travel:'Travel & partners',planner:'Life planner',health:'Exercise & Health',music:'DIRA Music',donations:'Donations',onthemove:'On the move! adverts'};
+  const sw=(act,k,on)=>`<label class="sw"><input type="checkbox" data-act="${act}" ${k?`data-k="${k}"`:''} ${on?'checked':''}><span></span></label>`;
+  return `<h2>App controls</h2><p class="lead">Changes apply instantly to the client app — switch to “Client App” to see them.</p>
+  <div class="pn"><h3>Platform status</h3><div class="fg"><div class="fl">${sw('a_maint','',s.maintenance)}<div><b class="sm">Maintenance mode</b><div class="mut sm">Blocks all client access</div></div></div><div class="fl">${sw('a_signups','',s.signupsOpen)}<div><b class="sm">Sign-ups open</b><div class="mut sm">Allow new accounts</div></div></div><div class="fl">${sw('a_autoapp','',s.autoApproveBiz)}<div><b class="sm">Auto-approve businesses</b><div class="mut sm">Skip manual verification (demo)</div></div></div></div></div>
+  <div class="pn"><h3>Feature switches</h3><div class="fg">${Object.keys(s.features).map(k=>`<div class="fl">${sw('a_flag',k,s.features[k])}<b class="sm">${names[k]||k}</b></div>`).join('')}</div></div>
+  <div class="two"><div class="pn"><h3>Platform fees (%)</h3>${[['p2p','Person-to-person transfers'],['wd','Withdrawals'],['shop','Shop commission']].map(x=>`<div class="row" style="margin-bottom:8px"><span class="grow sm">${x[1]}</span><input class="ns" type="number" step="0.5" data-bind="f.${x[0]}" value="${S.f[x[0]]}"></div>`).join('')}<button class="btn sm" data-act="a_fees">Save fees</button></div>
+  <div class="pn"><h3>Broadcast to all users</h3><textarea rows="3" data-bind="bc" placeholder="e.g. SemaChat will be down for 10 minutes tonight at 11pm">${esc(S.bc)}</textarea><div class="row" style="margin-top:8px"><button class="btn sm" data-act="a_bcast">Send broadcast</button>${s.announcement?`<button class="btn sm alt" data-act="a_bclear">Clear current</button>`:''}</div>${s.announcement?`<div class="hint" style="margin-top:8px">Live: ${esc(s.announcement.text)}</div>`:''}</div></div>`}
+function aPartners(){const l=S.a.partners||[];return `<h2>Third-party partners</h2><p class="lead">Airlines, rail, coaches, taxis, hotels and restaurants listed under Me.</p><div class="pn"><table class="tbl"><tr><th>Partner</th><th>Category</th><th>Offers</th><th>Commission %</th><th>Listed</th></tr>${l.map(p=>`<tr><td><b>${esc(p.name)}</b></td><td>${p.category}</td><td>${p.items}</td><td><div class="row"><input class="ns" type="number" data-bind="f.c_${p.id}" value="${S.f['c_'+p.id]!=null?S.f['c_'+p.id]:p.commission}"><button class="btn sm alt" data-act="a_pcomm" data-id="${p.id}">Save</button></div></td><td><label class="sw"><input type="checkbox" data-act="a_ptoggle" data-id="${p.id}" ${p.enabled?'checked':''}><span></span></label></td></tr>`).join('')}</table></div>`}
+function aAudit(){return `<h2>Audit log</h2><p class="lead">Every developer action, newest first.</p><div class="pn">${(S.a.audit||[]).map(a=>`<div class="row" style="padding:7px 0;border-bottom:1px solid var(--soft)"><span class="mut sm" style="width:120px">${dt(a.ts)} ${tm(a.ts)}</span><span>${esc(a.msg)}</span></div>`).join('')}</div>`}
+
+/*@ADMIN-END*/
+
+/* =============================== boot =============================== */
+(async function boot(){
+  // wait until every add-on script below has run, so no screen is drawn before its parts exist (this raced on fast servers)
+  if(document.readyState==='loading')await new Promise(r=>document.addEventListener('DOMContentLoaded',r,{once:true}));
+  if(!REMOTE){SemaChatCore.hooks.persist=DBsave}
+  if(adminMode()){await adminBoot();return}
+  // stay signed in until the person signs out: only a rejected token (401) ends the session, never being offline or a server restart
+  if(S.token){try{await startSession()}catch(e){if(e.status===401){S.token=null;store.del('semachat_tok');render()}else{S.blk='SemaChat cannot be reached right now. You are still signed in.';render()}}}else render();
+})();
+</script>
+<!--BIZ-->
+<!--ADJ-->
+<!--EXT-->
+<!--PWA-->
+</body>
+</html>

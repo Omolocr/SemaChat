@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer">
+<title>SemaChat Team Entry</title><link rel="icon" type="image/png" href="/assets/icon-32.png"><meta name="theme-color" content="#22c000">
+<style>
+:root{--g:#22c000;--ink:#1c2230;--bg:#f4f7f2;--card:#fff;--mut:#5d6675;--line:#dfe6dc}
+@media(prefers-color-scheme:dark){:root{--ink:#eef2ee;--bg:#10150f;--card:#192018;--mut:#a5afa3;--line:#2a3428}}
+*{box-sizing:border-box}body{margin:0;font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
+.box{max-width:460px;width:100%;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;text-align:center}
+img{width:72px;height:72px;border-radius:18px}h1{font-size:22px;margin:10px 0 2px}p{color:var(--mut);margin:6px 0}
+a.btn{display:block;background:var(--g);color:#fff;font:700 16px system-ui;padding:14px;border-radius:14px;text-decoration:none;margin:10px 0}a.btn.alt{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.err{color:#b3261e;font-weight:600}.warn{font-size:13px;margin-top:14px}
+</style></head><body><div class="box">
+<img src="/assets/icon-192.png" alt="SemaChat"><h1>SemaChat team entry</h1><p id="msg">Opening your access…</p><div id="go" hidden>
+<a class="btn" href="/">📱 Open the client app</a><a class="btn" href="/console">🛠️ Open the developer console</a><a class="btn alt" href="/install">⬇️ Install on this device</a>
+<p class="warn">You are signed in to both without a code. You stay signed in until you tap <b>Sign out / change account</b>. Keep this link private.</p></div>
+<script>
+function enter(){
+var h=location.hash.replace(/^#/,''),q={};h.split('&').forEach(function(x){var i=x.indexOf('=');if(i>0)q[decodeURIComponent(x.slice(0,i))]=decodeURIComponent(x.slice(i+1))});
+var pass=q.pass||'',who=q.who||'';try{if(!pass)pass=localStorage.getItem('sc_team_pass')||'';if(!who)who=localStorage.getItem('sc_team_who')||''}catch(e){}
+var m=document.getElementById('msg');
+if(!pass){m.className='err';m.textContent='This page needs your private team link (it ends with #pass=…). Ask the project owner for it.';return}
+fetch('/api/team/enter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pass:pass,who:who||'tester'})}).then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.error||'Not allowed');return j})}).then(function(j){
+  try{localStorage.setItem('semachat_tok',j.token);localStorage.setItem('semachat_atok',j.adminToken);localStorage.setItem('sc_team_pass',pass);localStorage.setItem('sc_team_who',j.who);sessionStorage.setItem('sc_launched','1')}catch(e){m.className='err';m.textContent='This browser blocks storage, so it cannot keep you signed in.';return}
+  history.replaceState(null,'',location.pathname);m.textContent='Welcome, '+j.name+'. You are in.';document.getElementById('go').hidden=false;
+}).catch(function(e){m.className='err';m.textContent=e.message==='That team pass is not valid.'?'That team pass is not valid. Check the link you were given.':e.message});
+}
+enter();window.addEventListener('hashchange',enter);
+</script></div></body></html>
