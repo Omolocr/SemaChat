@@ -2,27 +2,7 @@
 
 For the development and research team only. Real clients sign in with the emailed code (see DEPLOY.md).
 
-## 0. Free entry pass: no sign-up, no sign-in (simplest)
-
-In `.env` on the server add one line and restart:
-
-```
-SEMACHAT_TEAM_PASS=PUT-A-LONG-RANDOM-PASS-HERE
-```
-
-- Make it with `openssl rand -hex 12 | tr a-f A-F` (16 to 64 letters/numbers; hyphens are ignored).
-- Give each team member their **private link**, with their own name:
-  `https://YOUR-SITE/team#pass=THE-PASS&who=amina`
-- Opening that link signs them in to **both** the client app and the developer console on that device, with no email, no code and no sign-up. A page then offers *Open the client app*, *Open the developer console* and *Install on this device*.
-- They stay signed in until they tap **Sign out / change account**. To come back in, open the same link again.
-- Each `who` gets their own test account (`team-amina@semachat.team`), so the team's test data is not mixed.
-- The pass travels after the `#`, so it is never sent in a web address and does not appear in server logs. Still, **anyone with the link has full developer power**: share it privately.
-- Wrong passes: 10 failures lock the entry for 15 minutes. Every entry is written to the console **Audit log**.
-- **To revoke everyone:** change `SEMACHAT_TEAM_PASS` (old links stop working) and restart. **Before real clients arrive:** delete the line and restart; `/readyz` should then show `"teamPass": false`.
-- Real clients are not affected: they use email sign-up and sign-in with the 6-character emailed code.
-- In the two **preview files** (`semachat-preview.html`, `semachat-console-preview.html`) the sign-in pages carry an *⚡ Development team: enter without signing in* button (demo data only).
-
-## 1. Alternative: team email + shared team code
+## 1. Give the research team free access (both consoles)
 
 On the server, edit `.env` and add:
 
