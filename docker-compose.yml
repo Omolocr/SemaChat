@@ -1,0 +1,15 @@
+# SemaChat + automatic HTTPS (Caddy). Copy .env.example to .env, fill it in, then:  docker compose up -d
+services:
+  semachat:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    volumes: [ "semachat-data:/data" ]
+    expose: [ "3000" ]
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports: [ "80:80", "443:443" ]
+    volumes: [ "./Caddyfile:/etc/caddy/Caddyfile:ro", "caddy-data:/data" ]
+    depends_on: [ semachat ]
+volumes: { semachat-data: {}, caddy-data: {} }

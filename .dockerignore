@@ -1,0 +1,4 @@
+shots
+*.zip
+*.py
+backend/data.json
