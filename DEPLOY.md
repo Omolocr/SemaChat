@@ -51,3 +51,19 @@ Users sign up and sign in with **email only**: SemaChat emails a 6-character cod
 - `SEMACHAT_TEAM_ACCESS`, `SEMACHAT_TEAM_EMAILS`, `SEMACHAT_TEAM_CODE`: development-only sign-in for the research team (off by default). See DEV-ACCESS.md.
 - `/install`: install instructions page for phones, tablets and desktops. `/readyz` reports mailbox health. `node backend/tools/check-email.js [address]` tests the mailbox.
 - Behind a proxy on the same machine or private network the real visitor address is read from `X-Forwarded-For` automatically (`SEMACHAT_TRUST_PROXY=1` forces it, `0` disables it).
+
+## Deploying on Chajio Cloud (GitHub -> Dockerfile build)
+
+The platform builds the `Dockerfile` in this repository and then waits for the app to answer its health check. Do this once in the project's settings:
+
+1. **Environment variables** (Settings -> Environment). Without `SEMACHAT_SECRET` the app starts in a safe **setup mode**: it answers health checks and shows a page listing what is missing, but serves nothing else.
+   | Variable | Value |
+   |---|---|
+   | `SEMACHAT_SECRET` | a random string of 40+ letters/numbers (required) |
+   | `SEMACHAT_ADMIN_EMAILS` | developer email(s), comma separated |
+   | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `EMAIL_FROM` | the `login1@wavehub.co.ke` mailbox (see above) |
+   | `SEMACHAT_TEAM_PASS` | optional, development team entry pass (see DEV-ACCESS.md) |
+2. **Run ONE instance (replicas = 1).** The app keeps its data in one file, so two instances would each hold different accounts and people would be "signed out" at random. (More than one instance needs a shared database, which is a later step.)
+3. **Attach a persistent volume at `/data`** so accounts and messages survive redeploys. Without it the app still runs but the data is lost on every restart (`/readyz` then shows `"storage":"temporary..."`).
+4. **Port:** the app listens on `$PORT` (default 3000) on all interfaces. Health check path: `/healthz`.
+5. After the first successful deploy open `https://YOUR-SITE/readyz`: it must show `"ready":true`, the `email` line, and `"teamPass":true` if you set the pass.
