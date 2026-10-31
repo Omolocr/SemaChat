@@ -43,27 +43,53 @@ if (env.SEMACHAT_TEAM_ACCESS === '1') {
 
 /* ---- startup checks: say loudly what is still in demo mode, and refuse to run a public server that is wide open ---- */
 const problems = [], notes = [];
-if (!env.SEMACHAT_SECRET) problems.push('SEMACHAT_SECRET is not set: session tokens are guessable. Set a long random string.');
-if (env.SEMACHAT_SECRET && env.SEMACHAT_SECRET.length < 24) problems.push('SEMACHAT_SECRET is shorter than 24 characters.');
-if (!adminList.length) problems.push('Developer console still allows the demo address admin@semachat.app. Set SEMACHAT_ADMIN_EMAILS to your own email address(es).');
-if (!providers.cfg.email) problems.push('No email provider: sign-up and sign-in use the public demo code 123ABC. Set SMTP_HOST, SMTP_USER and SMTP_PASS for the login1@wavehub.co.ke mailbox (or RESEND_API_KEY).');
+const secretBad = !env.SEMACHAT_SECRET || env.SEMACHAT_SECRET.length < 24;
+if (!env.SEMACHAT_SECRET) problems.push('SEMACHAT_SECRET is not set: session tokens are guessable. Set a long random string (24+ characters).');
+else if (env.SEMACHAT_SECRET.length < 24) problems.push('SEMACHAT_SECRET is shorter than 24 characters.');
+if (!adminList.length) problems.push('No developer email is set (SEMACHAT_ADMIN_EMAILS): nobody can open the developer console by email until you set it' + (PROD ? '.' : ' (the demo address admin@semachat.app works in demo mode).'));
+if (!providers.cfg.email) problems.push('No login-email mailbox is set (SMTP_HOST, SMTP_USER, SMTP_PASS): ' + (PROD ? 'clients cannot receive sign-in codes yet.' : 'sign-in uses the public demo code 123ABC.'));
 if (!providers.cfg.mpesa) notes.push('M-Pesa is not configured: wallet top-ups are simulated (instant, no real money).');
 if (!env.SEMACHAT_TURN_URL) notes.push('No TURN server: calls work on most networks but can fail behind strict NATs. Set SEMACHAT_TURN_URL for reliable calls.');
+const ALLOW_DEMO = env.SEMACHAT_ALLOW_DEMO === '1';
+if (PROD && !ALLOW_DEMO) { core.DEMO.on = false; core.ADMIN.emails = adminList; }   // production never accepts the public demo code or the demo developer address
+const setupMode = PROD && !ALLOW_DEMO && secretBad;
 if (problems.length) {
-  const head = PROD ? 'REFUSING TO START (NODE_ENV=production):' : 'DEMO MODE. Fine for testing, NOT safe for real users:';
+  const head = setupMode ? 'SETUP REQUIRED (the app is NOT serving users yet):' : PROD ? 'RUNNING, BUT NOT READY FOR CLIENTS:' : 'DEMO MODE. Fine for testing, NOT safe for real users:';
   console.warn('\n⚠️  ' + head + '\n' + problems.map(p => '   - ' + p).join('\n'));
-  if (PROD && env.SEMACHAT_ALLOW_DEMO !== '1') { console.error('\nFix the items above, or set SEMACHAT_ALLOW_DEMO=1 to override (not recommended).'); process.exit(1); }
+}
+if (setupMode) {
+  // Do not crash: a crashing app can never pass the host's health check and the deployment just times out.
+  // Stay up, say exactly what is missing, and serve nothing else until SEMACHAT_SECRET is set.
+  const page = '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SemaChat setup</title><body style="font:16px/1.5 system-ui;max-width:640px;margin:40px auto;padding:0 16px"><h1>🌍 SemaChat: setup required</h1><p>The server is running, but it has not been given its secret yet, so it is not serving the app.</p><p><b>Add these settings</b> in your hosting dashboard (Environment variables) and redeploy:</p><ul><li><code>SEMACHAT_SECRET</code> = a long random string (24+ characters)</li><li><code>SEMACHAT_ADMIN_EMAILS</code> = your developer email(s)</li><li><code>SMTP_HOST</code>, <code>SMTP_USER</code>, <code>SMTP_PASS</code> = the login1@wavehub.co.ke mailbox</li><li>optional for the dev team: <code>SEMACHAT_TEAM_PASS</code></li></ul><p>Full list: DEPLOY.md and DEV-ACCESS.md in the repository.</p></body>';
+  require('http').createServer((req, res) => {
+    const u = String(req.url || '').split('?')[0];
+    if (u === '/healthz' || u === '/readyz') { res.writeHead(200, { 'Content-Type': 'application/json' }); return res.end(JSON.stringify({ ok: true, ready: true, setupRequired: true })); }
+    if (u.startsWith('/api/')) { res.writeHead(503, { 'Content-Type': 'application/json' }); return res.end(JSON.stringify({ error: 'SemaChat is not set up yet.', setupRequired: true })); }
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' }); res.end(page);
+  }).listen(PORT, () => console.log('SemaChat SETUP MODE listening on :' + PORT + ' (health checks pass; add SEMACHAT_SECRET to start the app)'));
+  return;
 }
 notes.forEach(n => console.warn('ℹ️  ' + n));
 
 /* ---- storage ---- */
-const store = storage.open(DB_FILE);
+let store, storageNote = '';
+try { store = storage.open(DB_FILE); } catch (e) {
+  // e.g. the volume is not writable by this user, or node:sqlite is missing: keep running on a temporary file instead of crashing
+  const tmpFile = require('path').join(require('os').tmpdir(), 'semachat-temp.json');
+  console.error('⚠️  STORAGE: cannot use ' + DB_FILE + ' (' + e.message + '). Falling back to a TEMPORARY file: data is LOST when the app restarts. Mount a writable volume at /data.');
+  storageNote = 'temporary (data lost on restart)'; store = storage.open(tmpFile);
+}
 let db = null; try { db = store.load(); } catch (e) { console.error('Could not read the database: ' + e.message); process.exit(1); }
 if (!db || db.v !== 2) db = core.seed();
 let saveTimer = null, dirty = false;
 const flush = () => { clearTimeout(saveTimer); saveTimer = null; if (!dirty) return; try { store.save(db); dirty = false; } catch (e) { console.error('SAVE FAILED: ' + e.message); } };
 const save = () => { dirty = true; if (!saveTimer) saveTimer = setTimeout(flush, 150); };
 dirty = true; flush();
+if (dirty) {       // the first save failed (read-only or root-owned volume): keep the app alive on a temporary file and say so loudly
+  const tmpFile = require('path').join(require('os').tmpdir(), 'semachat-temp.json');
+  console.error('⚠️  STORAGE: cannot write to ' + DB_FILE + '. Falling back to a TEMPORARY file: data is LOST when the app restarts. Make /data writable (Dockerfile does chown node) or mount a persistent volume there.');
+  try { store.close(); } catch (e) { /* ignore */ } storageNote = 'temporary (data lost on restart)'; store = storage.open(tmpFile); flush();
+}
 
 /* ---- realtime (SSE): userId -> Set(res) ---- */
 const streams = new Map();
@@ -112,8 +138,8 @@ const server = http.createServer((req, res) => {
   // health checks for load balancers / Docker / uptime monitors
   if (url.pathname === '/healthz') return send(res, 200, { ok: true, app: 'SemaChat', uptimeSec: Math.round(process.uptime()) });
   if (url.pathname === '/readyz') {
-    let ready = !!db && Array.isArray(db.users); let detail = store.kind;
-    try { if (store.kind === 'json') fs.accessSync(path.dirname(DB_FILE), fs.constants.W_OK); } catch (e) { ready = false; detail = 'storage not writable'; }
+    let ready = !!db && Array.isArray(db.users); let detail = storageNote || store.kind;
+    try { if (store.kind === 'json') fs.accessSync(path.dirname(store.file || DB_FILE), fs.constants.W_OK); } catch (e) { ready = false; detail = 'storage not writable'; }
     return send(res, ready ? 200 : 503, { ready, storage: detail, users: ready ? db.users.length : 0, email: { mode: providers.health.mode, ok: providers.health.ok, lastError: providers.health.lastError }, teamAccess: core.TEAM.enabled, teamPass: !!core.TEAM.pass });
   }
 

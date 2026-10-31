@@ -31,8 +31,9 @@
     if (a.length === b.length && require('crypto').timingSafeEqual(a, b)) { teamFails.delete(em); return true; }
     f.n++; if (f.n >= 10) { f.n = 0; f.until = now + 15 * 60000; } teamFails.set(em, f); return false;
   };
-  const otpSend = (email) => hooks.otpSend ? hooks.otpSend(normEmail(email)) : { hint: 'Demo mode: no email is sent. Use code ' + OTP };
-  const otpOk = (email, code) => teamBypass || teamCodeOk(email, code) || (hooks.otpCheck ? hooks.otpCheck(normEmail(email), normCode(code)) : normCode(code) === OTP);
+  const DEMO = { on: true };   // the public demo code works only while this is on; the server turns it OFF in production unless SEMACHAT_ALLOW_DEMO=1
+  const otpSend = (email) => hooks.otpSend ? hooks.otpSend(normEmail(email)) : DEMO.on ? { hint: 'Demo mode: no email is sent. Use code ' + OTP } : { hint: 'Sign-in email is not set up on this server yet. Please contact the SemaChat team.' };
+  const otpOk = (email, code) => teamBypass || teamCodeOk(email, code) || (hooks.otpCheck ? hooks.otpCheck(normEmail(email), normCode(code)) : (DEMO.on && normCode(code) === OTP));
   const CONSENT_VERSION = '2026-10';
   const taps = [], scanners = [];
   const uid = p => p + Math.random().toString(36).slice(2, 9);
@@ -1405,5 +1406,5 @@
   const X = { tierOf, route, uid, fail, byId, wallet, addTx, charge, addRevenue, notify, pushMessage, bizChatFor, bizOwnerFor, bizAudience, teamOf, canBiz, logEvent, audit, pick, pub, hash, friendsOf, D, H };
   const use = fn => fn(X);
 
-  return { seed, handle, hooks, OTP, ADMIN, TEAM, use, tap: f => taps.push(f), onMessage: f => scanners.push(f) };
+  return { seed, handle, hooks, OTP, ADMIN, TEAM, DEMO, use, tap: f => taps.push(f), onMessage: f => scanners.push(f) };
 });
